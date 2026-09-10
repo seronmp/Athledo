@@ -23,25 +23,6 @@
         <button onclick="switchTab('fleet')" id="tab-fleet" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_fleet">🚌 Gestione Pulmini</button>
       </nav>
 
-      window.switchTab = function(tab) {
-      document.getElementById('section-athletes').classList.add('hidden');
-      document.getElementById('section-facilities').classList.add('hidden');
-      document.getElementById('section-fleet').classList.add('hidden');
-
-      document.getElementById('tab-athletes').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
-      document.getElementById('tab-facilities').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
-      document.getElementById('tab-fleet').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
-
-      document.getElementById(`section-${tab}`).classList.remove('hidden');
-      document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
-
-      if(tab === 'facilities') {
-        renderFacilitiesTable();
-        loadFacilitiesFromDB(); // <-- AGGIUNGI QUI
-      }
-      if(tab === 'fleet') loadBuses();
-    };
-      
       <!-- Admin Tools & Lingua -->
       <div class="flex items-center space-x-3">
         <button onclick="openFieldBuilderModal()" class="px-3 py-1 bg-emerald-800 hover:bg-emerald-900 text-emerald-100 text-xs font-semibold rounded border border-emerald-600 flex items-center gap-1 transition">
@@ -115,28 +96,35 @@
 
     <!-- SEZIONE 2: CAMPI & PALESTRE -->
     <div id="section-facilities" class="hidden space-y-6">
+      
+      <!-- Form Aggiunta/Modifica Strutture -->
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <h3 id="facility-form-title" class="text-base font-semibold text-slate-800">➕ Aggiungi / Modifica Struttura</h3>
+        <form id="facility-form" onsubmit="handleFacilitySubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <input type="hidden" id="facility-id">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome Struttura *</label>
+            <input type="text" id="facility-name" required placeholder="Es. Campo Sintetico Mals" class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tipo *</label>
+            <select id="facility-type" class="w-full px-3 py-2 border rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-emerald-500">
+              <option value="summer">☀️ Estiva (Campo)</option>
+              <option value="winter">❄️ Invernale (Palestra)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Orari / Note</label>
+            <input type="text" id="facility-schedule" placeholder="Es. Lun 17:00 U11" class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div class="flex items-end gap-2">
+            <button type="submit" id="facility-submit-btn" class="flex-1 py-2 px-4 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition">Salva</button>
+            <button type="button" id="facility-cancel-btn" onclick="resetFacilityForm()" class="hidden py-2 px-3 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Annulla</button>
+          </div>
+        </form>
+      </div>
 
-      <!-- NUOVA FORM DI INSERIMENTO CAMPI -->
-  <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
-    <h3 class="text-base font-semibold text-slate-800">➕ Aggiungi / Modifica Struttura</h3>
-    <form id="facility-form" onsubmit="handleFacilitySubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <input type="hidden" id="facility-id">
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome Struttura *</label>
-        <input type="text" id="facility-name" required placeholder="Es. Campo Sintetico Mals" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tipo *</label>
-        <select id="facility-type" class="w-full px-3 py-2 border rounded-lg text-sm bg-white outline-none">
-          <option value="summer">☀️ Estiva (Campo)</option>
-          <option value="winter">❄️ Invernale (Palestra)</option>
-        </select>
-      </div>
-      <div class="md:col-span-2 flex items-end">
-        <button type="submit" class="w-full py-2 px-4 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition">Salva Struttura</button>
-      </div>
-    </form>
-  </div><div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 class="text-lg font-bold text-slate-800" data-i18n="facilities_title">Piano Assegnazione Allenamenti</h2>
           <p class="text-xs text-slate-500" data-i18n="facilities_subtitle">Coordinamento Campi Estivi & Palestre Invernali</p>
@@ -152,12 +140,10 @@
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="bg-slate-100 text-slate-600 border-b">
-                <th class="p-3 border-r w-32" data-i18n="th_facility">Struttura</th>
-                <th class="p-3 border-r" data-i18n="day_mon">Lunedì</th>
-                <th class="p-3 border-r" data-i18n="day_tue">Martedì</th>
-                <th class="p-3 border-r" data-i18n="day_wed">Mercoledì</th>
-                <th class="p-3 border-r" data-i18n="day_thu">Giovedì</th>
-                <th class="p-3 border-r" data-i18n="day_fri">Venerdì</th>
+                <th class="p-3 border-r" data-i18n="th_facility">Struttura</th>
+                <th class="p-3 border-r">Tipo</th>
+                <th class="p-3 border-r">Orari / Dettagli</th>
+                <th class="p-3 text-right">Azioni</th>
               </tr>
             </thead>
             <tbody id="facilities-tbody" class="divide-y divide-slate-100">
@@ -190,28 +176,6 @@
               </button>
             </div>
 
-<!-- Form Gestione Campi & Palestre -->
-<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
-  <h3 class="text-base font-semibold text-slate-800">➕ Aggiungi / Modifica Struttura</h3>
-  <form id="facility-form" onsubmit="handleFacilitySubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <input type="hidden" id="facility-id">
-    <div>
-      <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome Struttura *</label>
-      <input type="text" id="facility-name" required placeholder="Es. Campo Sintetico Mals" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
-    </div>
-    <div>
-      <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tipo *</label>
-      <select id="facility-type" class="w-full px-3 py-2 border rounded-lg text-sm bg-white outline-none">
-        <option value="summer">☀️ Estiva (Campo)</option>
-        <option value="winter">❄️ Invernale (Palestra)</option>
-      </select>
-    </div>
-    <div class="md:col-span-2 flex items-end">
-      <button type="submit" class="w-full py-2 px-4 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition">Salva Struttura</button>
-    </div>
-  </form>
-</div>
-            
             <form id="bus-form" onsubmit="handleBusSubmit(event)" class="p-6 space-y-4">
               <input type="hidden" id="bus-id">
               
@@ -353,6 +317,7 @@
   <script>
     // Configurazione globale Backend e Tenant
     const API_URL = 'http://localhost:3000/api/buses';
+    const FACILITIES_API_URL = 'http://localhost:3000/api/facilities';
     const TENANT_ID = '57aca40f-9ed3-4890-999a-c37513aedc46';
 
     const i18n = {
@@ -374,21 +339,14 @@
         th_actions: "Azioni",
         btn_remind: "Invia Sollecito",
         status_expired: "15/09/2026 (Scaduto)",
-        status_warning: "30/09/2026 (30 giorni)",
         facilities_title: "Piano Assegnazione Allenamenti",
         facilities_subtitle: "Coordinamento Campi Estivi & Palestre Invernali",
         season_summer: "☀️ Estate (Campi)",
         season_winter: "❄️ Inverno (Palestre)",
         th_facility: "Struttura",
-        day_mon: "Lunedì",
-        day_tue: "Martedì",
-        day_wed: "Mercoledì",
-        day_thu: "Giovedì",
-        day_fri: "Venerdì",
         fleet_title: "Parco Auto & Pulmini SPG",
         fleet_subtitle: "Gestione e inserimento flotta pulmini delle 4 associazioni",
         bus_form_new: "➕ Aggiungi Nuovo Pulmino",
-        bus_form_edit: "✏️ Modifica Scheda Pulmino",
         btn_cancel_edit: "Annulla",
         bus_label_name: "Nome / Modello Pulmino *",
         bus_label_plate: "Targa *",
@@ -396,10 +354,7 @@
         bus_label_notes: "Note / Attrezzatura",
         bus_label_active: "Mezzo Attivo / Disponibile",
         bus_btn_save: "Salva Pulmino",
-        bus_btn_update: "Aggiorna Pulmino",
         fleet_registered: "Pulmini Registrati",
-        badge_available: "Disponibile",
-        badge_maintenance: "Manutenzione / Non attivo",
         modal_title: "Nuova Iscrizione & Ricevuta",
         label_athlete_name: "Nome Atleta / Minore",
         label_parent_email: "Email Genitore / Tutore",
@@ -431,21 +386,14 @@
         th_actions: "Aktionen",
         btn_remind: "Erinnerung Senden",
         status_expired: "15.09.2026 (Abgelaufen)",
-        status_warning: "30.09.2026 (30 Tage)",
         facilities_title: "Trainingsplan & Platzbelegung",
         facilities_subtitle: "Koordination Sommerplätze & Winterhallen",
         season_summer: "☀️ Sommer (Plätze)",
         season_winter: "❄️ Winter (Hallen)",
         th_facility: "Sportanlage",
-        day_mon: "Montag",
-        day_tue: "Dienstag",
-        day_wed: "Mittwoch",
-        day_thu: "Donnerstag",
-        day_fri: "Freitag",
         fleet_title: "SPG Fahrzeug- & Kleinbuspark",
         fleet_subtitle: "Verwaltung und Erfassung der Kleinbusse der 4 Vereine",
         bus_form_new: "➕ Neuen Kleinbus Hinzufügen",
-        bus_form_edit: "✏️ Kleinbus Bearbeiten",
         btn_cancel_edit: "Abbrechen",
         bus_label_name: "Name / Kleinbus-Modell *",
         bus_label_plate: "Kfz-Kennzeichen *",
@@ -453,10 +401,7 @@
         bus_label_notes: "Hinweise / Ausstattung",
         bus_label_active: "Fahrzeug Aktiv / Verfügbar",
         bus_btn_save: "Kleinbus Speichern",
-        bus_btn_update: "Kleinbus Aktualisieren",
         fleet_registered: "Registrierte Kleinbusse",
-        badge_available: "Verfügbar",
-        badge_maintenance: "Wartung / Inaktiv",
         modal_title: "Neue Einschreibung & Bestätigung",
         label_athlete_name: "Name des Athleten / Minderjährigen",
         label_parent_email: "E-Mail der Eltern / Erziehungsberechtigten",
@@ -476,19 +421,7 @@
     let currentSeason = 'summer';
     let dynamicFields = [];
     let buses = [];
-
-    const summerSchedule = [
-      { facility: "Campo Mals (Sintetico)", mon: "17:00 U11 / 18:30 U15", tue: "17:30 U13", wed: "17:00 U11 / 18:30 U15", thu: "17:30 U13", fri: "18:00 Prima Squadra" },
-      { facility: "Campo Burgeis (Erba)", mon: "17:30 U13", tue: "18:00 Prima Squadra", wed: "- ", thu: "18:00 Prima Squadra", fri: "17:00 Primi Calci" },
-      { facility: "Campo Laatsch", mon: "-", tue: "17:00 Pulcini", wed: "-", thu: "17:00 Pulcini", fri: "-" },
-      { facility: "Campo Taufers", mon: "18:00 Amatori", tue: "-", wed: "18:00 Amatori", thu: "-", fri: "-" }
-    ];
-
-    const winterSchedule = [
-      { facility: "Palestra Scuole Mals", mon: "16:30 U9 / 18:00 U11", tue: "17:00 U13", wed: "16:30 U9 / 18:00 U11", thu: "17:00 U13", fri: "18:00 Prima Squadra" },
-      { facility: "Palestra Burgeis", mon: "17:00 Pulcini", tue: "18:00 Amatori", wed: "17:00 Pulcini", thu: "18:00 Amatori", fri: "-" },
-      { facility: "Palestra Taufers", mon: "-", tue: "17:30 U15 Indoor", wed: "-", thu: "17:30 U15 Indoor", fri: "-" }
-    ];
+    let facilities = [];
 
     window.switchTab = function(tab) {
       document.getElementById('section-athletes').classList.add('hidden');
@@ -502,7 +435,9 @@
       document.getElementById(`section-${tab}`).classList.remove('hidden');
       document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
 
-      if(tab === 'facilities') renderFacilitiesTable();
+      if(tab === 'facilities') {
+        loadFacilities();
+      }
       if(tab === 'fleet') loadBuses();
     };
 
@@ -521,17 +456,24 @@
     function renderFacilitiesTable() {
       const tbody = document.getElementById('facilities-tbody');
       tbody.innerHTML = '';
-      const data = currentSeason === 'summer' ? summerSchedule : winterSchedule;
+      
+      const filtered = facilities.filter(f => f.type === currentSeason);
 
-      data.forEach(item => {
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Nessuna struttura trovata per questa stagione.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(item => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-3 font-bold border-r bg-slate-50 text-slate-700">${item.facility}</td>
-          <td class="p-3 border-r">${item.mon}</td>
-          <td class="p-3 border-r">${item.tue}</td>
-          <td class="p-3 border-r">${item.wed}</td>
-          <td class="p-3 border-r">${item.thu}</td>
-          <td class="p-3 border-r">${item.fri}</td>
+          <td class="p-3 font-bold text-slate-800">${item.name}</td>
+          <td class="p-3"><span class="px-2 py-0.5 bg-slate-100 rounded text-slate-600 font-semibold">${item.type === 'summer' ? 'Estate' : 'Inverno'}</span></td>
+          <td class="p-3 text-slate-600">${item.schedule || '-'}</td>
+          <td class="p-3 text-right space-x-2">
+            <button onclick="editFacility('${item.id}')" class="text-emerald-600 hover:underline font-semibold">Modifica</button>
+            <button onclick="deleteFacility('${item.id}')" class="text-rose-600 hover:underline font-semibold">Elimina</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -539,7 +481,6 @@
 
     window.setLanguage = function(lang) {
       currentLang = lang;
-      
       const btnIt = document.getElementById('lang-it');
       const btnDe = document.getElementById('lang-de');
       
@@ -557,7 +498,6 @@
           element.textContent = i18n[lang][key];
         }
       });
-
       renderDynamicFields();
       if(buses.length > 0) renderBuses();
     };
@@ -612,26 +552,110 @@
         <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">${currentLang.toUpperCase()}</span></td>
         <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">Attivo</span></td>
         <td class="p-4 text-right">
-          <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">${i18n[currentLang].btn_remind}</button>
+          <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">Invia Sollecito</button>
         </td>
       `;
-
       tbody.appendChild(newRow);
       closeCheckoutModal();
     };
 
-    // ---- GESTIONE PULMINI (INTEGRATA CON API LOCALE E NEON DB) ----
+    // ---- GESTIONE CAMPI & PALESTRE (API) ----
+    async function loadFacilities() {
+      try {
+        const response = await fetch(FACILITIES_API_URL, {
+          headers: { 'x-tenant-id': TENANT_ID }
+        });
+        if (response.ok) {
+          facilities = await response.json();
+        } else {
+          facilities = [];
+        }
+        renderFacilitiesTable();
+      } catch (error) {
+        console.error('Errore caricamento strutture:', error);
+        facilities = [];
+        renderFacilitiesTable();
+      }
+    }
+
+    window.handleFacilitySubmit = async function(event) {
+      event.preventDefault();
+      const id = document.getElementById('facility-id').value;
+      const endpoint = id ? `${FACILITIES_API_URL}/${id}` : FACILITIES_API_URL;
+      const method = id ? 'PUT' : 'POST';
+
+      const data = {
+        name: document.getElementById('facility-name').value,
+        type: document.getElementById('facility-type').value,
+        schedule: document.getElementById('facility-schedule').value
+      };
+
+      try {
+        const response = await fetch(endpoint, {
+          method: method,
+          headers: { 'Content-Type': 'application/json', 'x-tenant-id': TENANT_ID },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          resetFacilityForm();
+          loadFacilities();
+        } else {
+          alert('Errore durante il salvataggio della struttura.');
+        }
+      } catch (error) {
+        console.error('Errore di rete:', error);
+      }
+    };
+
+    window.resetFacilityForm = function() {
+      document.getElementById('facility-form').reset();
+      document.getElementById('facility-id').value = '';
+      document.getElementById('facility-form-title').textContent = '➕ Aggiungi / Modifica Struttura';
+      document.getElementById('facility-submit-btn').textContent = 'Salva';
+      document.getElementById('facility-cancel-btn').classList.add('hidden');
+    };
+
+    window.editFacility = function(id) {
+      const fac = facilities.find(f => f.id == id);
+      if (!fac) return;
+      document.getElementById('facility-id').value = fac.id;
+      document.getElementById('facility-name').value = fac.name || '';
+      document.getElementById('facility-type').value = fac.type || 'summer';
+      document.getElementById('facility-schedule').value = fac.schedule || '';
+
+      document.getElementById('facility-form-title').textContent = '✏️ Modifica Struttura';
+      document.getElementById('facility-submit-btn').textContent = 'Aggiorna';
+      document.getElementById('facility-cancel-btn').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteFacility = async function(id) {
+      if (!confirm("Sei sicuro di voler eliminare questa struttura?")) return;
+      try {
+        const response = await fetch(`${FACILITIES_API_URL}/${id}`, {
+          method: 'DELETE',
+          headers: { 'x-tenant-id': TENANT_ID }
+        });
+        if (response.ok) {
+          loadFacilities();
+        } else {
+          alert('Errore durante l\'eliminazione.');
+        }
+      } catch (error) {
+        console.error('Errore di rete:', error);
+      }
+    };
+
+    // ---- GESTIONE PULMINI (API) ----
     async function loadBuses() {
       try {
         const response = await fetch(API_URL, {
-          headers: {
-            'x-tenant-id': TENANT_ID
-          }
+          headers: { 'x-tenant-id': TENANT_ID }
         });
         if (response.ok) {
           buses = await response.json();
         } else {
-          console.error("Errore nel recupero dei pulmini dal backend");
           buses = [];
         }
         renderBuses();
@@ -648,7 +672,7 @@
       
       const countLabel = document.getElementById('fleet-count');
       if(countLabel) {
-        countLabel.textContent = `${i18n[currentLang].fleet_registered} (${buses.length})`;
+        countLabel.textContent = `Pulmini Registrati (${buses.length})`;
       }
 
       if (buses.length === 0) {
@@ -739,9 +763,7 @@
       try {
         const response = await fetch(`${API_URL}/${id}`, {
           method: 'DELETE',
-          headers: {
-            'x-tenant-id': TENANT_ID
-          }
+          headers: { 'x-tenant-id': TENANT_ID }
         });
         if (response.ok) {
           loadBuses();
@@ -756,56 +778,8 @@
     // Inizializzazione al caricamento
     window.addEventListener('DOMContentLoaded', () => {
       loadBuses();
-      loadFacilitiesFromDB(); // <-- AGGIUNGI QUI
+      loadFacilities();
     });
-    // ---- GESTIONE CAMPI & PALESTRE ----
-const FACILITIES_API_URL = 'http://localhost:3000/api/facilities';
-let dynamicFacilities = [];
-
-async function loadFacilitiesFromDB() {
-  try {
-    const response = await fetch(FACILITIES_API_URL, {
-      headers: { 'x-tenant-id': TENANT_ID }
-    });
-    if (response.ok) {
-      dynamicFacilities = await response.json();
-      // Se vuoi unire i dati del DB alla tabella statica esistente:
-      console.log("Strutture caricate:", dynamicFacilities);
-    }
-  } catch (error) {
-    console.error('Errore caricamento strutture:', error);
-  }
-}
-
-window.handleFacilitySubmit = async function(event) {
-  event.preventDefault();
-  const id = document.getElementById('facility-id').value;
-  const endpoint = id ? `${FACILITIES_API_URL}/${id}` : FACILITIES_API_URL;
-  const method = id ? 'PUT' : 'POST';
-
-  const data = {
-    name: document.getElementById('facility-name').value,
-    type: document.getElementById('facility-type').value,
-  };
-
-  try {
-    const response = await fetch(endpoint, {
-      method: method,
-      headers: { 'Content-Type': 'application/json', 'x-tenant-id': TENANT_ID },
-      body: JSON.stringify(data)
-    });
-
-    if (response.ok) {
-      document.getElementById('facility-form').reset();
-      document.getElementById('facility-id').value = '';
-      loadFacilitiesFromDB();
-    } else {
-      alert('Errore durante il salvataggio della struttura.');
-    }
-  } catch (error) {
-    console.error('Errore di rete:', error);
-  }
-};
   </script>
 </body>
 </html>
