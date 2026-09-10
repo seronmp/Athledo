@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athledo - ASD/ASV Manager</title>
+  <!-- Tailwind CSS via CDN per una grafica pulita e moderna -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Header & Navigation -->
+  <header class="bg-emerald-700 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <span class="text-2xl font-bold tracking-wider">ATHLEDO</span>
+        <span class="text-xs bg-emerald-800 px-2 py-1 rounded text-emerald-200">Alto Adige / Südtirol</span>
+      </div>
+      
+      <!-- Selettore Lingua IT / DE -->
+      <div class="flex items-center space-x-2">
+        <button id="lang-it" onclick="setLanguage('it')" class="px-3 py-1 bg-white text-emerald-800 font-bold rounded shadow-sm text-sm hover:bg-emerald-50">IT</button>
+        <button id="lang-de" onclick="setLanguage('de')" class="px-3 py-1 bg-emerald-800 text-white font-bold rounded shadow-sm text-sm hover:bg-emerald-600">DE</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
+
+    <!-- KPI / Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        <p class="text-sm font-medium text-slate-500" data-i18n="total_athletes">Atleti Tesserati</p>
+        <p class="text-3xl font-extrabold text-slate-900 mt-2">128</p>
+      </div>
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        <p class="text-sm font-medium text-slate-500" data-i18n="expiring_certificates">Certificati in Scadenza (30 gg)</p>
+        <p class="text-3xl font-extrabold text-amber-600 mt-2">4</p>
+      </div>
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        <p class="text-sm font-medium text-slate-500" data-i18n="expired_certificates">Certificati Scaduti</p>
+        <p class="text-3xl font-extrabold text-rose-600 mt-2">2</p>
+      </div>
+    </div>
+
+    <!-- Action Bar & Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h2 class="text-lg font-bold text-slate-800" data-i18n="athletes_list">Anagrafica Atleti</h2>
+        <button onclick="toggleModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="add_athlete">+ Nuovo Atleta</button>
+      </div>
+
+      <!-- Athletes Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
+              <th class="p-4" data-i18n="th_name">Nome & Cognome</th>
+              <th class="p-4" data-i18n="th_fiscal">Codice Fiscale</th>
+              <th class="p-4" data-i18n="th_lang">Lingua</th>
+              <th class="p-4" data-i18n="th_med_exp">Scadenza Visita Medica</th>
+              <th class="p-4 text-right" data-i18n="th_actions">Azioni</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-sm">
+            <tr>
+              <td class="p-4 font-medium text-slate-900">Lukas Hofer</td>
+              <td class="p-4 text-slate-500">HFRLKS90A01H612X</td>
+              <td class="p-4"><span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded font-semibold">DE</span></td>
+              <td class="p-4"><span class="px-2 py-1 bg-rose-100 text-rose-800 text-xs rounded font-semibold">15/09/2026 (Scaduto)</span></td>
+              <td class="p-4 text-right">
+                <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">Invia Sollecito</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="p-4 font-medium text-slate-900">Matteo Rossi</td>
+              <td class="p-4 text-slate-500">RSSMTT85M15F205Z</td>
+              <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">IT</span></td>
+              <td class="p-4"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded font-semibold">30/09/2026 (30 giorni)</span></td>
+              <td class="p-4 text-right">
+                <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">Invia Sollecito</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bilingual JavaScript Logic -->
+  <script>
+    const i18n = {
+      it: {
+        total_athletes: "Atleti Tesserati",
+        expiring_certificates: "Certificati in Scadenza (30 gg)",
+        expired_certificates: "Certificati Scaduti",
+        athletes_list: "Anagrafica Atleti",
+        add_athlete: "+ Nuovo Atleta",
+        th_name: "Nome & Cognome",
+        th_fiscal: "Codice Fiscale",
+        th_lang: "Lingua Pref.",
+        th_med_exp: "Scadenza Visita Medica",
+        th_actions: "Azioni",
+        btn_remind: "Invia Sollecito Email"
+      },
+      de: {
+        total_athletes: "Registrierte Athleten",
+        expiring_certificates: "Ablaufende Atteste (30 Tage)",
+        expired_certificates: "Abgelaufene Atteste",
+        athletes_list: "Athletenübersicht",
+        add_athlete: "+ Neuer Athlet",
+        th_name: "Name & Nachname",
+        th_fiscal: "Steuernummer",
+        th_lang: "Sprache",
+        th_med_exp: "Ablauf Ärztliches Attest",
+        th_actions: "Aktionen",
+        btn_remind: "Erinnerung Senden"
+      }
+    };
+
+    function setLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (i18n[lang][key]) {
+          element.textContent = i18n[lang][key];
+        }
+      });
+
+      // Update button styles
+      if(lang === 'it') {
+        document.getElementById('lang-it').className = "px-3 py-1 bg-white text-emerald-800 font-bold rounded shadow-sm text-sm hover:bg-emerald-50";
+        document.getElementById('lang-de').className = "px-3 py-1 bg-emerald-800 text-white font-bold rounded shadow-sm text-sm hover:bg-emerald-600";
+      } else {
+        document.getElementById('lang-de').className = "px-3 py-1 bg-white text-emerald-800 font-bold rounded shadow-sm text-sm hover:bg-emerald-50";
+        document.getElementById('lang-it').className = "px-3 py-1 bg-emerald-800 text-white font-bold rounded shadow-sm text-sm hover:bg-emerald-600";
+      }
+    }
+  </script>
+</body>
+</html>
