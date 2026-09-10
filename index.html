@@ -16,10 +16,15 @@
         <span class="text-xs bg-emerald-800 px-2.5 py-1 rounded text-emerald-100 font-semibold">SPG Obervinschgau</span>
       </div>
       
-      <!-- Selettore Lingua IT / DE -->
-      <div class="flex items-center space-x-2">
-        <button id="lang-it" onclick="setLanguage('it')" class="px-3 py-1 bg-white text-emerald-800 font-bold rounded shadow-sm text-sm hover:bg-emerald-50">IT</button>
-        <button id="lang-de" onclick="setLanguage('de')" class="px-3 py-1 bg-emerald-800 text-white font-bold rounded shadow-sm text-sm hover:bg-emerald-600">DE</button>
+      <!-- Selettore Lingua & Admin Tools -->
+      <div class="flex items-center space-x-3">
+        <button onclick="openFieldBuilderModal()" class="px-3 py-1 bg-emerald-800 hover:bg-emerald-900 text-emerald-100 text-xs font-semibold rounded border border-emerald-600 flex items-center gap-1 transition">
+          <span>⚙️</span> <span data-i18n="btn_manage_fields">Gestisci Campi Form</span>
+        </button>
+        <div class="flex items-center space-x-1 border-l border-emerald-600 pl-3">
+          <button id="lang-it" onclick="setLanguage('it')" class="px-2.5 py-1 bg-white text-emerald-800 font-bold rounded text-xs">IT</button>
+          <button id="lang-de" onclick="setLanguage('de')" class="px-2.5 py-1 bg-emerald-800 text-white font-bold rounded text-xs">DE</button>
+        </div>
       </div>
     </div>
   </header>
@@ -90,9 +95,9 @@
     </div>
   </main>
 
-  <!-- MODAL: Nuova Iscrizione e Scelta Ricevuta -->
+  <!-- MODAL 1: Nuova Iscrizione -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-5">
+    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 class="text-lg font-bold text-slate-800" data-i18n="modal_title">Nuova Iscrizione & Ricevuta</h3>
         <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
@@ -104,7 +109,6 @@
           <input type="text" id="athleteName" placeholder="Es. Jonas Kofler" required class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
         </div>
 
-        <!-- SPUNTE PER LA RICEVUTA FISCALE -->
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-2" data-i18n="label_receipt_club">Intestazione Ricevuta Fiscale Per:</label>
           <div class="grid grid-cols-2 gap-2 text-sm">
@@ -127,6 +131,11 @@
           </div>
         </div>
 
+        <!-- CONTENITORE CAMPI DINAMICI CREATI DALL'ADMIN -->
+        <div id="dynamicFieldsContainer" class="space-y-4 pt-2 border-t border-slate-100">
+          <!-- I campi aggiunti via Form Builder compariranno qui -->
+        </div>
+
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_fee">Quota Iscrizione</label>
           <input type="text" value="€ 150,00" readonly class="w-full px-3 py-2 bg-slate-100 border rounded-lg text-sm font-bold text-slate-700">
@@ -135,6 +144,40 @@
         <div class="pt-3 flex justify-end space-x-3">
           <button type="button" onclick="closeCheckoutModal()" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50" data-i18n="btn_cancel">Annulla</button>
           <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold shadow-sm" data-i18n="btn_confirm">Conferma & Genera Ricevuta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Admin Form Builder (Gestione Campi Autonoma) -->
+  <div id="fieldBuilderModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-5">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-lg font-bold text-slate-800" data-i18n="builder_title">Aggiungi Campo Modulo</h3>
+        <button onclick="closeFieldBuilderModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+
+      <form onsubmit="handleAddDynamicField(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_field_it">Nome Campo (Italiano)</label>
+          <input type="text" id="fieldNameIT" placeholder="Es. Taglia Maglietta" required class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_field_de">Nome Campo (Tedesco)</label>
+          <input type="text" id="fieldNameDE" placeholder="Es. Trikotgröße" required class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_field_type">Tipo di Dato</label>
+          <select id="fieldType" class="w-full px-3 py-2 border rounded-lg text-sm outline-none bg-white">
+            <option value="text">Testo libero (Text)</option>
+            <option value="date">Data (Date)</option>
+            <option value="checkbox">Spunta di conferma (Checkbox)</option>
+          </select>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-3 border-t">
+          <button type="button" onclick="closeFieldBuilderModal()" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50" data-i18n="btn_cancel">Annulla</button>
+          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold shadow-sm" data-i18n="btn_add_field_confirm">Aggiungi al Modulo</button>
         </div>
       </form>
     </div>
@@ -149,6 +192,7 @@
         expired_certificates: "Certificati Scaduti",
         athletes_list: "Anagrafica Atleti SPG",
         btn_new_registration: "+ Nuova Iscrizione & Ricevuta",
+        btn_manage_fields: "Gestisci Campi Form",
         th_name: "Nome & Cognome",
         th_club: "Associazione Emittente",
         th_lang: "Lingua",
@@ -160,7 +204,12 @@
         label_receipt_club: "Intestazione Ricevuta Fiscale Per:",
         label_fee: "Quota Iscrizione",
         btn_cancel: "Annulla",
-        btn_confirm: "Conferma & Genera Ricevuta"
+        btn_confirm: "Conferma & Genera Ricevuta",
+        builder_title: "Aggiungi Campo Modulo",
+        label_field_it: "Nome Campo (Italiano)",
+        label_field_de: "Nome Campo (Tedesco)",
+        label_field_type: "Tipo di Dato",
+        btn_add_field_confirm: "Aggiungi al Modulo"
       },
       de: {
         total_athletes: "Registrierte Athleten",
@@ -168,6 +217,7 @@
         expired_certificates: "Abgelaufene Atteste",
         athletes_list: "SPG Athletenübersicht",
         btn_new_registration: "+ Neue Einschreibung & Bestätigung",
+        btn_manage_fields: "Formularfelder Verwalten",
         th_name: "Name & Nachname",
         th_club: "Ausstellender Verein",
         th_lang: "Sprache",
@@ -179,11 +229,17 @@
         label_receipt_club: "Steuerbestätigung Ausgestellt Von:",
         label_fee: "Einschreibgebühr",
         btn_cancel: "Abbrechen",
-        btn_confirm: "Bestätigen & Bestätigung Erstellen"
+        btn_confirm: "Bestätigen & Bestätigung Erstellen",
+        builder_title: "Formularfeld Hinzufügen",
+        label_field_it: "Feldname (Italienisch)",
+        label_field_de: "Feldname (Deutsch)",
+        label_field_type: "Datentyp",
+        btn_add_field_confirm: "Zum Formular Hinzufügen"
       }
     };
 
     let currentLang = 'it';
+    let dynamicFields = []; // Memoria campi personalizzati dagli admin
 
     function setLanguage(lang) {
       currentLang = lang;
@@ -193,13 +249,7 @@
           element.textContent = i18n[lang][key];
         }
       });
-      if(lang === 'it') {
-        document.getElementById('lang-it').className = "px-3 py-1 bg-white text-emerald-800 font-bold rounded shadow-sm text-sm hover:bg-emerald-50";
-        document.getElementById('lang-de').className = "px-3 py-1 bg-emerald-800 text-white font-bold rounded shadow-sm text-sm hover:bg-emerald-600";
-      } else {
-        document.getElementById('lang-de').className = "px-3 py-1 bg-white text-emerald-800 font-bold rounded shadow-sm text-sm hover:bg-emerald-50";
-        document.getElementById('lang-it').className = "px-3 py-1 bg-emerald-800 text-white font-bold rounded shadow-sm text-sm hover:bg-emerald-600";
-      }
+      renderDynamicFields();
     }
 
     function openCheckoutModal() {
@@ -208,6 +258,54 @@
 
     function closeCheckoutModal() {
       document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    function openFieldBuilderModal() {
+      document.getElementById('fieldBuilderModal').classList.remove('hidden');
+    }
+
+    function closeFieldBuilderModal() {
+      document.getElementById('fieldBuilderModal').classList.add('hidden');
+    }
+
+    // Aggiunge un nuovo campo personalizzato
+    function handleAddDynamicField(event) {
+      event.preventDefault();
+      const nameIT = document.getElementById('fieldNameIT').value;
+      const nameDE = document.getElementById('fieldNameDE').value;
+      const type = document.getElementById('fieldType').value;
+
+      dynamicFields.push({ nameIT, nameDE, type });
+      renderDynamicFields();
+
+      document.getElementById('fieldNameIT').value = '';
+      document.getElementById('fieldNameDE').value = '';
+      closeFieldBuilderModal();
+    }
+
+    // Rendering dei campi dinamici nel modulo iscrizione
+    function renderDynamicFields() {
+      const container = document.getElementById('dynamicFieldsContainer');
+      container.innerHTML = '';
+
+      dynamicFields.forEach(field => {
+        const labelText = currentLang === 'it' ? field.nameIT : field.nameDE;
+        const div = document.createElement('div');
+
+        if (field.type === 'checkbox') {
+          div.className = 'flex items-center space-x-2';
+          div.innerHTML = `
+            <input type="checkbox" class="text-emerald-600 rounded focus:ring-emerald-500">
+            <label class="text-sm text-slate-700">${labelText}</label>
+          `;
+        } else {
+          div.innerHTML = `
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">${labelText}</label>
+            <input type="${field.type}" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+          `;
+        }
+        container.appendChild(div);
+      });
     }
 
     function handleFormSubmit(event) {
