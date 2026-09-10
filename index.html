@@ -689,5 +689,70 @@
       }
     }
   </script>
+<script>
+  const API_URL = 'http://localhost:3000/api/buses';
+  const TENANT_ID = 'INSERISCI-UUID-TENANT'; // Es. '123e4567-e89b-12d3-a456-426614174000'
+
+  // 1. Funzione per caricare e mostrare i pulmini esistenti (GET)
+  async function loadBuses() {
+    try {
+      const response = await fetch(API_URL, {
+        headers: {
+          'x-tenant-id': TENANT_ID
+        }
+      });
+      if (!response.ok) throw new Error('Errore nel recupero dei pulmini');
+      const buses = await response.json();
+      console.log('Pulmini caricati da Neon:', buses);
+      
+      // Qui puoi inserire la logica per aggiornare l'HTML della lista pulmini
+    } catch (error) {
+      console.error('Errore:', error);
+    }
+  }
+
+  // 2. Funzione per salvare un nuovo pulmino (POST)
+  document.addEventListener('DOMContentLoaded', () => {
+    loadBuses(); // Carica i dati all'avvio
+
+    // Intercetta il form di creazione pulmino (assicurati che l'ID del form corrisponda o usa il selettore corretto)
+    const form = document.querySelector('form'); // Sostituisci con l'ID del tuo form se ce l'ha (es. #form-pulmino)
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const nuovoPulmino = {
+          name: document.querySelector('input[placeholder*="Ford Transit"]').value, // Adatta in base agli ID dei tuoi input
+          license_plate: document.querySelector('input[placeholder*="BZ 123 AB"]').value,
+          seats: parseInt(document.querySelector('input[type="number"]').value) || 9,
+          notes: document.querySelector('textarea').value,
+          is_active: document.querySelector('input[type="checkbox"]').checked
+        };
+
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-tenant-id': TENANT_ID
+            },
+            body: JSON.stringify(nuovoPulmino)
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Pulmino salvato con successo:', data);
+            form.reset();
+            loadBuses(); // ricarica la lista aggiornata
+          } else {
+            console.error('Errore durante il salvataggio nel database');
+          }
+        } catch (err) {
+          console.error('Errore di rete:', err);
+        }
+      });
+    }
+  });
+</script>
 </body>
 </html>
