@@ -186,7 +186,7 @@
           </div>
         </div>
 
-        <!-- Lista Pulmini collegata a Neon DB tramite Backend -->
+        <!-- Lista Pulmini collegata al Database Neon -->
         <div class="lg:col-span-7 space-y-4">
           <h3 class="text-lg font-semibold text-slate-800" id="fleet-count" data-i18n="fleet_registered">Pulmini Registrati (0)</h3>
           <div id="bus-list-container" class="space-y-3">
@@ -289,6 +289,10 @@
   </div>
 
   <script>
+    // Configurazione globale Backend e Tenant
+    const API_URL = 'http://localhost:3000/api/buses';
+    const TENANT_ID = '57aca40f-9ed3-4890-999a-c37513aedc46';
+
     const i18n = {
       it: {
         nav_athletes: "📋 Anagrafica & Moduli",
@@ -424,7 +428,7 @@
       { facility: "Palestra Taufers", mon: "-", tue: "17:30 U15 Indoor", wed: "-", thu: "17:30 U15 Indoor", fri: "-" }
     ];
 
-    function switchTab(tab) {
+    window.switchTab = function(tab) {
       document.getElementById('section-athletes').classList.add('hidden');
       document.getElementById('section-facilities').classList.add('hidden');
       document.getElementById('section-fleet').classList.add('hidden');
@@ -438,9 +442,9 @@
 
       if(tab === 'facilities') renderFacilitiesTable();
       if(tab === 'fleet') loadBuses();
-    }
+    };
 
-    function setSeason(season) {
+    window.setSeason = function(season) {
       currentSeason = season;
       if(season === 'summer') {
         document.getElementById('btn-season-summer').className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-emerald-700 shadow-sm";
@@ -450,7 +454,7 @@
         document.getElementById('btn-season-summer').className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:bg-white/50";
       }
       renderFacilitiesTable();
-    }
+    };
 
     function renderFacilitiesTable() {
       const tbody = document.getElementById('facilities-tbody');
@@ -471,7 +475,7 @@
       });
     }
 
-    function setLanguage(lang) {
+    window.setLanguage = function(lang) {
       currentLang = lang;
       
       const btnIt = document.getElementById('lang-it');
@@ -494,14 +498,14 @@
 
       renderDynamicFields();
       if(buses.length > 0) renderBuses();
-    }
+    };
 
-    function openCheckoutModal() { document.getElementById('checkoutModal').classList.remove('hidden'); }
-    function closeCheckoutModal() { document.getElementById('checkoutModal').classList.add('hidden'); }
-    function openFieldBuilderModal() { document.getElementById('fieldBuilderModal').classList.remove('hidden'); }
-    function closeFieldBuilderModal() { document.getElementById('fieldBuilderModal').classList.add('hidden'); }
+    window.openCheckoutModal = function() { document.getElementById('checkoutModal').classList.remove('hidden'); };
+    window.closeCheckoutModal = function() { document.getElementById('checkoutModal').classList.add('hidden'); };
+    window.openFieldBuilderModal = function() { document.getElementById('fieldBuilderModal').classList.remove('hidden'); };
+    window.closeFieldBuilderModal = function() { document.getElementById('fieldBuilderModal').classList.add('hidden'); };
 
-    function handleAddDynamicField(event) {
+    window.handleAddDynamicField = function(event) {
       event.preventDefault();
       const nameIT = document.getElementById('fieldNameIT').value;
       const nameDE = document.getElementById('fieldNameDE').value;
@@ -510,7 +514,7 @@
       dynamicFields.push({ nameIT, nameDE, type });
       renderDynamicFields();
       closeFieldBuilderModal();
-    }
+    };
 
     function renderDynamicFields() {
       const container = document.getElementById('dynamicFieldsContainer');
@@ -530,7 +534,7 @@
       });
     }
 
-    function handleFormSubmit(event) {
+    window.handleFormSubmit = function(event) {
       event.preventDefault();
       const nameInput = document.getElementById('athleteName').value;
       const emailInput = document.getElementById('parentEmail').value;
@@ -552,209 +556,145 @@
 
       tbody.appendChild(newRow);
       closeCheckoutModal();
-    }
+    };
 
-    // ---- GESTIONE PULMINI (INTEGRATA CON API E NEON DB) ----
+    // ---- GESTIONE PULMINI (INTEGRATA CON API LOCALE E NEON DB) ----
     async function loadBuses() {
       try {
-       const response = await fetch(API_URL, {
+        const response = await fetch(API_URL, {
           headers: {
-            'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'demo_token')
+            'x-tenant-id': TENANT_ID
           }
         });
         if (response.ok) {
           buses = await response.json();
         } else {
-          // Fallback dati dimostrativi se il server non è ancora attivo
-          buses = [
-            { id: '1', name: 'Ford Transit 9 Posti', license_plate: 'BZ 123 AB', seats: 9, notes: 'Gancio traino e catene da neve', is_active: true },
-            { id: '2', name: 'VW Caravelle 9 Posti', license_plate: 'BZ 456 CD', seats: 9, notes: 'Climatizzatore bizona', is_active: true }
-          ];
+          console.error("Errore nel recupero dei pulmini dal backend");
+          buses = [];
         }
         renderBuses();
       } catch (error) {
-        console.error('Errore caricamento pulmini:', error);
+        console.error('Errore di connessione al server:', error);
+        buses = [];
+        renderBuses();
       }
     }
 
     function renderBuses() {
       const container = document.getElementById('bus-list-container');
       if (!container) return;
-      document.getElementById('fleet-count').innerText = `${i18n[currentLang].fleet_registered} (${buses.length})`;
       
+      const countLabel = document.getElementById('fleet-count');
+      if(countLabel) {
+        countLabel.textContent = `${i18n[currentLang].fleet_registered} (${buses.length})`;
+      }
+
       if (buses.length === 0) {
-        container.innerHTML = `<div class="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-8 text-center text-slate-500">${currentLang === 'it' ? 'Nessun pulmino registrato.' : 'Keine Kleinbusse registriert.'}</div>`;
+        container.innerHTML = `<div class="p-6 bg-white rounded-xl border border-slate-200 text-center text-slate-500 text-sm">Nessun pulmino registrato per questo tenant.</div>`;
         return;
       }
 
-      container.innerHTML = buses.map(bus => `
-        <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-start justify-between gap-4">
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <h4 class="font-semibold text-slate-900">${bus.name}</h4>
-              <span class="px-2 py-0.5 rounded text-xs font-medium ${bus.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
-                ${bus.is_active ? i18n[currentLang].badge_available : i18n[currentLang].badge_maintenance}
-              </span>
-            </div>
-            <div class="flex items-center gap-4 text-xs text-slate-600 pt-1">
-              <span class="font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-semibold text-slate-800">${bus.license_plate}</span>
-              <span>👥 ${bus.seats} ${currentLang === 'it' ? 'Posti' : 'Sitze'}</span>
-            </div>
-            ${bus.notes ? `<p class="text-xs text-slate-500 pt-2 italic border-t border-slate-100 mt-2">${bus.notes}</p>` : ''}
+      container.innerHTML = '';
+      buses.forEach(bus => {
+        const card = document.createElement('div');
+        card.className = "bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between gap-4";
+        card.innerHTML = `
+          <div>
+            <h4 class="font-bold text-slate-800 text-sm">${bus.name || 'Senza nome'}</h4>
+            <p class="text-xs text-slate-500">Targa: <span class="font-mono uppercase">${bus.license_plate || bus.plate || '-'}</span> | Posti: ${bus.capacity || bus.seats || '-'}</p>
+            ${bus.notes ? `<p class="text-xs text-slate-400 mt-1">Note: ${bus.notes}</p>` : ''}
           </div>
-          <div class="flex items-center gap-1">
-            <button onclick="editBus('${bus.id}')" class="p-2 text-slate-500 hover:text-emerald-600 hover:bg-slate-100 rounded-lg cursor-pointer" title="Modifica">✏️</button>
-            <button onclick="deleteBus('${bus.id}')" class="p-2 text-slate-500 hover:text-red-600 hover:bg-slate-100 rounded-lg cursor-pointer" title="Elimina">🗑️</button>
+          <div class="flex items-center space-x-2">
+            <button onclick="editBus('${bus.id}')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded transition">Modifica</button>
+            <button onclick="deleteBus('${bus.id}')" class="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded transition">Elimina</button>
           </div>
-        </div>
-      `).join('');
+        `;
+        container.appendChild(card);
+      });
     }
 
-    async function handleBusSubmit(e) {
-      e.preventDefault();
+    window.handleBusSubmit = async function(event) {
+      event.preventDefault();
       const id = document.getElementById('bus-id').value;
-      const busData = {
+      const endpoint = id ? `${API_URL}/${id}` : API_URL;
+      const method = id ? 'PUT' : 'POST';
+
+      const data = {
         name: document.getElementById('bus-name').value,
-        license_plate: document.getElementById('bus-plate').value.trim().toUpperCase(),
-        seats: parseInt(document.getElementById('bus-seats').value),
+        license_plate: document.getElementById('bus-plate').value,
+        seats: parseInt(document.getElementById('bus-seats').value, 10),
         notes: document.getElementById('bus-notes').value,
         is_active: document.getElementById('bus-active').checked
       };
 
       try {
-        const url = id ? `/api/buses/${id}` : '/api/buses';
-        const method = id ? 'PUT' : 'POST';
-
-        const url = API_URL;
-    const response = await fetch(url, {
+        const response = await fetch(endpoint, {
           method: method,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'demo_token')
+            'x-tenant-id': TENANT_ID
           },
-          body: JSON.stringify(busData)
+          body: JSON.stringify(data)
         });
 
-        if (response.ok || !response.url.includes('/api/')) {
-          // Gestione locale di fallback se l'API non è attiva sul server locale
-          if (id) {
-            buses = buses.map(b => b.id === id ? { id, ...busData } : b);
-          } else {
-            buses.push({ id: Date.now().toString(), ...busData });
-          }
+        if (response.ok) {
           resetBusForm();
-          renderBuses();
+          loadBuses();
+        } else {
+          alert('Errore durante il salvataggio del pulmino.');
         }
       } catch (error) {
-        console.error('Errore salvataggio pulmino:', error);
+        console.error('Errore di rete:', error);
       }
-    }
+    };
 
-    function editBus(id) {
-      const bus = buses.find(b => b.id === id);
-      if (!bus) return;
-
-      document.getElementById('bus-id').value = bus.id;
-      document.getElementById('bus-name').value = bus.name;
-      document.getElementById('bus-plate').value = bus.license_plate;
-      document.getElementById('bus-seats').value = bus.seats;
-      document.getElementById('bus-notes').value = bus.notes || '';
-      document.getElementById('bus-active').checked = bus.is_active;
-
-      document.getElementById('form-title').innerText = i18n[currentLang].bus_form_edit;
-      document.getElementById('submit-btn').innerText = i18n[currentLang].bus_btn_update;
-      document.getElementById('cancel-edit-btn').classList.remove('hidden');
-    }
-
-    function resetBusForm() {
+    window.resetBusForm = function() {
       document.getElementById('bus-form').reset();
       document.getElementById('bus-id').value = '';
-      document.getElementById('form-title').innerText = i18n[currentLang].bus_form_new;
-      document.getElementById('submit-btn').innerText = i18n[currentLang].bus_btn_save;
+      document.getElementById('form-title').innerHTML = '➕ Aggiungi Nuovo Pulmino';
       document.getElementById('cancel-edit-btn').classList.add('hidden');
-    }
+      document.getElementById('submit-btn').textContent = 'Salva Pulmino';
+    };
 
-    async function deleteBus(id) {
-      const msg = currentLang === 'it' ? 'Sei sicuro di voler rimuovere questo pulmino?' : 'Sind Sie sicher, dass Sie diesen Kleinbus entfernen möchten?';
-      if (confirm(msg)) {
-        try {
-          await fetch(`/api/buses/${id}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'demo_token') }
-          });
-        } catch (e) {
-          // Ignora l'errore di rete in ambiente di test frontend puro
-        }
-        buses = buses.filter(b => b.id !== id);
-        renderBuses();
-      }
-    }
-  </script>
-<script>
-  const API_URL = 'http://localhost:3000/api/buses';
-  const TENANT_ID = '57aca40f-9ed3-4890-999a-c37513aedc46';'// Es. '123e4567-e89b-12d3-a456-426614174000'
-
-  // 1. Funzione per caricare e mostrare i pulmini esistenti (GET)
-  async function loadBuses() {
-    try {
-      const response = await fetch(API_URL, {
-        headers: {
-          'x-tenant-id': TENANT_ID
-        }
-      });
-      if (!response.ok) throw new Error('Errore nel recupero dei pulmini');
-      const buses = await response.json();
-      console.log('Pulmini caricati da Neon:', buses);
+    window.editBus = function(id) {
+      const bus = buses.find(b => b.id == id);
+      if (!bus) return;
+      document.getElementById('bus-id').value = bus.id;
+      document.getElementById('bus-name').value = bus.name || '';
+      document.getElementById('bus-plate').value = bus.license_plate || bus.plate || '';
+      document.getElementById('bus-seats').value = bus.capacity || bus.seats || 9;
+      document.getElementById('bus-notes').value = bus.notes || '';
+      document.getElementById('bus-active').checked = bus.is_active ?? true;
       
-      // Qui puoi inserire la logica per aggiornare l'HTML della lista pulmini
-    } catch (error) {
-      console.error('Errore:', error);
-    }
-  }
+      document.getElementById('form-title').innerHTML = '✏️ Modifica Scheda Pulmino';
+      document.getElementById('cancel-edit-btn').classList.remove('hidden');
+      document.getElementById('submit-btn').textContent = 'Aggiorna Pulmino';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
-  // 2. Funzione per salvare un nuovo pulmino (POST)
-  document.addEventListener('DOMContentLoaded', () => {
-    loadBuses(); // Carica i dati all'avvio
-
-    // Intercetta il form di creazione pulmino (assicurati che l'ID del form corrisponda o usa il selettore corretto)
-    const form = document.querySelector('form'); // Sostituisci con l'ID del tuo form se ce l'ha (es. #form-pulmino)
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const nuovoPulmino = {
-          name: document.querySelector('input[placeholder*="Ford Transit"]').value, // Adatta in base agli ID dei tuoi input
-          license_plate: document.querySelector('input[placeholder*="BZ 123 AB"]').value,
-          seats: parseInt(document.querySelector('input[type="number"]').value) || 9,
-          notes: document.querySelector('textarea').value,
-          is_active: document.querySelector('input[type="checkbox"]').checked
-        };
-
-        try {
-          const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-          'Content-Type': 'application/json',
-          'x-tenant-id': 'INSERISCI-UUID-TENANT'
-}
-            },
-            body: JSON.stringify(nuovoPulmino)
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            console.log('Pulmino salvato con successo:', data);
-            form.reset();
-            loadBuses(); // ricarica la lista aggiornata
-          } else {
-            console.error('Errore durante il salvataggio nel database');
+    window.deleteBus = async function(id) {
+      if (!confirm("Sei sicuro di voler eliminare questo pulmino?")) return;
+      try {
+        const response = await fetch(`${API_URL}/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'x-tenant-id': TENANT_ID
           }
-        } catch (err) {
-          console.error('Errore di rete:', err);
+        });
+        if (response.ok) {
+          loadBuses();
+        } else {
+          alert('Errore durante l\'eliminazione.');
         }
-      });
-    }
-  });
-</script>
+      } catch (error) {
+        console.error('Errore di rete:', error);
+      }
+    };
+
+    // Inizializzazione al caricamento
+    window.addEventListener('DOMContentLoaded', () => {
+      loadBuses();
+    });
+  </script>
 </body>
 </html>
