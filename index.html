@@ -16,10 +16,17 @@
         <span class="text-xs bg-emerald-800 px-2.5 py-1 rounded text-emerald-100 font-semibold">SPG Obervinschgau</span>
       </div>
       
-      <!-- Selettore Lingua & Admin Tools -->
+      <!-- Navigazione Moduli -->
+      <nav class="hidden md:flex items-center space-x-1">
+        <button onclick="switchTab('athletes')" id="tab-athletes" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white">📋 Anagrafica & Moduli</button>
+        <button onclick="switchTab('facilities')" id="tab-facilities" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">⚽ Campi & Palestre</button>
+        <button onclick="switchTab('fleet')" id="tab-fleet" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">🚌 Gestione Pulmini</button>
+      </nav>
+
+      <!-- Admin Tools & Lingua -->
       <div class="flex items-center space-x-3">
         <button onclick="openFieldBuilderModal()" class="px-3 py-1 bg-emerald-800 hover:bg-emerald-900 text-emerald-100 text-xs font-semibold rounded border border-emerald-600 flex items-center gap-1 transition">
-          <span>⚙️</span> <span data-i18n="btn_manage_fields">Gestisci Campi Form</span>
+          <span>⚙️</span> <span data-i18n="btn_manage_fields">Campi Dynamic</span>
         </button>
         <div class="flex items-center space-x-1 border-l border-emerald-600 pl-3">
           <button id="lang-it" onclick="setLanguage('it')" class="px-2.5 py-1 bg-white text-emerald-800 font-bold rounded text-xs">IT</button>
@@ -29,71 +36,184 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- MAIN CONTENT -->
   <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
 
-    <!-- KPI / Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-        <p class="text-sm font-medium text-slate-500" data-i18n="total_athletes">Atleti Tesserati</p>
-        <p class="text-3xl font-extrabold text-slate-900 mt-2">128</p>
+    <!-- SEZIONE 1: ANAGRAFICA ATLETI -->
+    <div id="section-athletes" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+          <p class="text-sm font-medium text-slate-500" data-i18n="total_athletes">Atleti Tesserati</p>
+          <p class="text-3xl font-extrabold text-slate-900 mt-2">128</p>
+        </div>
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+          <p class="text-sm font-medium text-slate-500" data-i18n="expiring_certificates">Certificati in Scadenza (30 gg)</p>
+          <p class="text-3xl font-extrabold text-amber-600 mt-2">4</p>
+        </div>
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+          <p class="text-sm font-medium text-slate-500" data-i18n="expired_certificates">Certificati Scaduti</p>
+          <p class="text-3xl font-extrabold text-rose-600 mt-2">2</p>
+        </div>
       </div>
-      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-        <p class="text-sm font-medium text-slate-500" data-i18n="expiring_certificates">Certificati in Scadenza (30 gg)</p>
-        <p class="text-3xl font-extrabold text-amber-600 mt-2">4</p>
-      </div>
-      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-        <p class="text-sm font-medium text-slate-500" data-i18n="expired_certificates">Certificati Scaduti</p>
-        <p class="text-3xl font-extrabold text-rose-600 mt-2">2</p>
+
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-800" data-i18n="athletes_list">Anagrafica Atleti SPG</h2>
+            <p class="text-xs text-slate-500">Mals • Burgeis • Laatsch • Taufers</p>
+          </div>
+          <button onclick="openCheckoutModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_new_registration">+ Nuova Iscrizione & Ricevuta</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
+                <th class="p-4" data-i18n="th_name">Nome & Cognome</th>
+                <th class="p-4" data-i18n="th_email">Email Genitore</th>
+                <th class="p-4" data-i18n="th_club">Associazione Emittente</th>
+                <th class="p-4" data-i18n="th_lang">Lingua</th>
+                <th class="p-4" data-i18n="th_med_exp">Scadenza Visita Medica</th>
+                <th class="p-4 text-right" data-i18n="th_actions">Azioni</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm">
+              <tr>
+                <td class="p-4 font-medium text-slate-900">Lukas Hofer</td>
+                <td class="p-4 text-slate-600 font-mono text-xs">hofer.eltern@example.com</td>
+                <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV Burgeis</span></td>
+                <td class="p-4"><span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded font-semibold">DE</span></td>
+                <td class="p-4"><span class="px-2 py-1 bg-rose-100 text-rose-800 text-xs rounded font-semibold">15/09/2026 (Scaduto)</span></td>
+                <td class="p-4 text-right">
+                  <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">Invia Sollecito</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-4 font-medium text-slate-900">Matteo Rossi</td>
+                <td class="p-4 text-slate-600 font-mono text-xs">famiglia.rossi@example.it</td>
+                <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV Mals</span></td>
+                <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">IT</span></td>
+                <td class="p-4"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded font-semibold">30/09/2026 (30 giorni)</span></td>
+                <td class="p-4 text-right">
+                  <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">Invia Sollecito</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Action Bar & Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- SEZIONE 2: CAMPI & PALESTRE -->
+    <div id="section-facilities" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 class="text-lg font-bold text-slate-800" data-i18n="athletes_list">Anagrafica Atleti SPG</h2>
-          <p class="text-xs text-slate-500">Mals • Burgeis • Laatsch • Taufers</p>
+          <h2 class="text-lg font-bold text-slate-800">Piano Assegnazione Allenamenti</h2>
+          <p class="text-xs text-slate-500">Coordinamento Campi Estivi & Palestre Invernali</p>
         </div>
-        <button onclick="openCheckoutModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_new_registration">+ Nuova Iscrizione & Ricevuta</button>
+        <!-- Selettore Stagione -->
+        <div class="flex items-center space-x-2 bg-slate-100 p-1 rounded-lg">
+          <button id="btn-season-summer" onclick="setSeason('summer')" class="px-3 py-1.5 rounded-md text-xs font-bold bg-white text-emerald-700 shadow-sm">☀️ Estate (Campi)</button>
+          <button id="btn-season-winter" onclick="setSeason('winter')" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:bg-white/50">❄️ Inverno (Palestre)</button>
+        </div>
       </div>
 
-      <!-- Table -->
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
-              <th class="p-4" data-i18n="th_name">Nome & Cognome</th>
-              <th class="p-4" data-i18n="th_email">Email Genitore</th>
-              <th class="p-4" data-i18n="th_club">Associazione Emittente</th>
-              <th class="p-4" data-i18n="th_lang">Lingua</th>
-              <th class="p-4" data-i18n="th_med_exp">Scadenza Visita Medica</th>
-              <th class="p-4 text-right" data-i18n="th_actions">Azioni</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100 text-sm">
-            <tr>
-              <td class="p-4 font-medium text-slate-900">Lukas Hofer</td>
-              <td class="p-4 text-slate-600 font-mono text-xs">hofer.eltern@example.com</td>
-              <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV Burgeis</span></td>
-              <td class="p-4"><span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded font-semibold">DE</span></td>
-              <td class="p-4"><span class="px-2 py-1 bg-rose-100 text-rose-800 text-xs rounded font-semibold">15/09/2026 (Scaduto)</span></td>
-              <td class="p-4 text-right">
-                <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">Invia Sollecito</button>
-              </td>
-            </tr>
-            <tr>
-              <td class="p-4 font-medium text-slate-900">Matteo Rossi</td>
-              <td class="p-4 text-slate-600 font-mono text-xs">famiglia.rossi@example.it</td>
-              <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV Mals</span></td>
-              <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">IT</span></td>
-              <td class="p-4"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded font-semibold">30/09/2026 (30 giorni)</span></td>
-              <td class="p-4 text-right">
-                <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">Invia Sollecito</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Tabella Calendario Settimanale -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 border-b">
+                <th class="p-3 border-r w-32">Struttura</th>
+                <th class="p-3 border-r">Lunedì</th>
+                <th class="p-3 border-r">Martedì</th>
+                <th class="p-3 border-r">Mercoledì</th>
+                <th class="p-3 border-r">Giovedì</th>
+                <th class="p-3 border-r">Venerdì</th>
+              </tr>
+            </thead>
+            <tbody id="facilities-tbody" class="divide-y divide-slate-100">
+              <!-- Render dinamico da Javascript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEZIONE 3: GESTIONE PULMINI -->
+    <div id="section-fleet" class="hidden space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800">Parco Auto & Pulmini SPG</h2>
+          <p class="text-xs text-slate-500">Prenotazione e stato dei mezzi delle 4 associazioni</p>
+        </div>
+        <button onclick="alert('Funzione prenotazione pulmino in arrivo!')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">+ Prenota Pulmino</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Bus 1 -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">Disponibile</span>
+            <span class="text-xs text-slate-400 font-mono">ASV Mals</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800">Ford Transit 9 Posti</h3>
+            <p class="text-xs text-slate-500 font-mono">Targa: BZ 123 AB</p>
+          </div>
+          <div class="text-xs text-slate-600 space-y-1 pt-2 border-t">
+            <p><strong>Prossima Trasferta:</strong> Sabato (Esordienti)</p>
+            <p><strong>Ultimo Tagliando:</strong> 12.000 km</p>
+          </div>
+        </div>
+
+        <!-- Bus 2 -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded">Prenotato</span>
+            <span class="text-xs text-slate-400 font-mono">ASV Burgeis</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800">VW Caravelle 9 Posti</h3>
+            <p class="text-xs text-slate-500 font-mono">Targa: BZ 456 CD</p>
+          </div>
+          <div class="text-xs text-slate-600 space-y-1 pt-2 border-t">
+            <p><strong>Uso Attuale:</strong> Domenica -> Merano</p>
+            <p><strong>Autista:</strong> H. Kofler</p>
+          </div>
+        </div>
+
+        <!-- Bus 3 -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">Disponibile</span>
+            <span class="text-xs text-slate-400 font-mono">ASV Laatsch</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800">Opel Vivaro 9 Posti</h3>
+            <p class="text-xs text-slate-500 font-mono">Targa: BZ 789 EF</p>
+          </div>
+          <div class="text-xs text-slate-600 space-y-1 pt-2 border-t">
+            <p><strong>Prossima Trasferta:</strong> Nessuna</p>
+            <p><strong>Manutenzione:</strong> Ok</p>
+          </div>
+        </div>
+
+        <!-- Bus 4 -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold px-2 py-0.5 bg-rose-100 text-rose-800 rounded">In Manutenzione</span>
+            <span class="text-xs text-slate-400 font-mono">ASV Taufers</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800">Renault Traffic 9 Posti</h3>
+            <p class="text-xs text-slate-500 font-mono">Targa: BZ 999 ZZ</p>
+          </div>
+          <div class="text-xs text-slate-600 space-y-1 pt-2 border-t">
+            <p><strong>Stato:</strong> Cambio Gomme Invernali</p>
+            <p><strong>Rientro previsto:</strong> Venerdì</p>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -112,7 +232,6 @@
           <input type="text" id="athleteName" placeholder="Es. Jonas Kofler" required class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
         </div>
 
-        <!-- CAMPO EMAIL GENITORE -->
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_parent_email">Email Genitore / Tutore</label>
           <input type="email" id="parentEmail" placeholder="es. eltern@example.com" required class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
@@ -140,10 +259,7 @@
           </div>
         </div>
 
-        <!-- CONTENITORE CAMPI DINAMICI CREATI DALL'ADMIN -->
-        <div id="dynamicFieldsContainer" class="space-y-4 pt-2 border-t border-slate-100">
-          <!-- I campi aggiunti via Form Builder compariranno qui -->
-        </div>
+        <div id="dynamicFieldsContainer" class="space-y-4 pt-2 border-t border-slate-100"></div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_fee">Quota Iscrizione</label>
@@ -158,7 +274,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: Admin Form Builder (Gestione Campi Autonoma) -->
+  <!-- MODAL 2: Admin Form Builder -->
   <div id="fieldBuilderModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-5">
       <div class="flex justify-between items-center border-b pb-3">
@@ -193,7 +309,6 @@
     </div>
   </div>
 
-  <!-- JavaScript i18n & Dynamic Logic -->
   <script>
     const i18n = {
       it: {
@@ -202,7 +317,7 @@
         expired_certificates: "Certificati Scaduti",
         athletes_list: "Anagrafica Atleti SPG",
         btn_new_registration: "+ Nuova Iscrizione & Ricevuta",
-        btn_manage_fields: "Gestisci Campi Form",
+        btn_manage_fields: "Campi Dynamic",
         th_name: "Nome & Cognome",
         th_email: "Email Genitore",
         th_club: "Associazione Emittente",
@@ -229,7 +344,7 @@
         expired_certificates: "Abgelaufene Atteste",
         athletes_list: "SPG Athletenübersicht",
         btn_new_registration: "+ Neue Einschreibung & Bestätigung",
-        btn_manage_fields: "Formularfelder Verwalten",
+        btn_manage_fields: "Formularfelder",
         th_name: "Name & Nachname",
         th_email: "E-Mail Erziehungsberechtigte",
         th_club: "Ausstellender Verein",
@@ -253,7 +368,67 @@
     };
 
     let currentLang = 'it';
+    let currentSeason = 'summer';
     let dynamicFields = [];
+
+    const summerSchedule = [
+      { facility: "Campo Mals (Sintetico)", mon: "17:00 U11 / 18:30 U15", tue: "17:30 U13", wed: "17:00 U11 / 18:30 U15", thu: "17:30 U13", fri: "18:00 Prima Squadra" },
+      { facility: "Campo Burgeis (Erba)", mon: "17:30 U13", tue: "18:00 Prima Squadra", wed: "- ", thu: "18:00 Prima Squadra", fri: "17:00 Primi Calci" },
+      { facility: "Campo Laatsch", mon: "-", tue: "17:00 Pulcini", wed: "-", thu: "17:00 Pulcini", fri: "-" },
+      { facility: "Campo Taufers", mon: "18:00 Amatori", tue: "-", wed: "18:00 Amatori", thu: "-", fri: "-" }
+    ];
+
+    const winterSchedule = [
+      { facility: "Palestra Scuole Mals", mon: "16:30 U9 / 18:00 U11", tue: "17:00 U13", wed: "16:30 U9 / 18:00 U11", thu: "17:00 U13", fri: "18:00 Prima Squadra" },
+      { facility: "Palestra Burgeis", mon: "17:00 Pulcini", tue: "18:00 Amatori", wed: "17:00 Pulcini", thu: "18:00 Amatori", fri: "-" },
+      { facility: "Palestra Taufers", mon: "-", tue: "17:30 U15 Indoor", wed: "-", thu: "17:30 U15 Indoor", fri: "-" }
+    ];
+
+    function switchTab(tab) {
+      document.getElementById('section-athletes').classList.add('hidden');
+      document.getElementById('section-facilities').classList.add('hidden');
+      document.getElementById('section-fleet').classList.add('hidden');
+
+      document.getElementById('tab-athletes').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+      document.getElementById('tab-facilities').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+      document.getElementById('tab-fleet').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+
+      document.getElementById(`section-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
+
+      if(tab === 'facilities') renderFacilitiesTable();
+    }
+
+    function setSeason(season) {
+      currentSeason = season;
+      if(season === 'summer') {
+        document.getElementById('btn-season-summer').className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-emerald-700 shadow-sm";
+        document.getElementById('btn-season-winter').className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:bg-white/50";
+      } else {
+        document.getElementById('btn-season-winter').className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-emerald-700 shadow-sm";
+        document.getElementById('btn-season-summer').className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:bg-white/50";
+      }
+      renderFacilitiesTable();
+    }
+
+    function renderFacilitiesTable() {
+      const tbody = document.getElementById('facilities-tbody');
+      tbody.innerHTML = '';
+      const data = currentSeason === 'summer' ? summerSchedule : winterSchedule;
+
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-3 font-bold border-r bg-slate-50 text-slate-700">${item.facility}</td>
+          <td class="p-3 border-r">${item.mon}</td>
+          <td class="p-3 border-r">${item.tue}</td>
+          <td class="p-3 border-r">${item.wed}</td>
+          <td class="p-3 border-r">${item.thu}</td>
+          <td class="p-3 border-r">${item.fri}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
 
     function setLanguage(lang) {
       currentLang = lang;
@@ -266,21 +441,10 @@
       renderDynamicFields();
     }
 
-    function openCheckoutModal() {
-      document.getElementById('checkoutModal').classList.remove('hidden');
-    }
-
-    function closeCheckoutModal() {
-      document.getElementById('checkoutModal').classList.add('hidden');
-    }
-
-    function openFieldBuilderModal() {
-      document.getElementById('fieldBuilderModal').classList.remove('hidden');
-    }
-
-    function closeFieldBuilderModal() {
-      document.getElementById('fieldBuilderModal').classList.add('hidden');
-    }
+    function openCheckoutModal() { document.getElementById('checkoutModal').classList.remove('hidden'); }
+    function closeCheckoutModal() { document.getElementById('checkoutModal').classList.add('hidden'); }
+    function openFieldBuilderModal() { document.getElementById('fieldBuilderModal').classList.remove('hidden'); }
+    function closeFieldBuilderModal() { document.getElementById('fieldBuilderModal').classList.add('hidden'); }
 
     function handleAddDynamicField(event) {
       event.preventDefault();
@@ -290,9 +454,6 @@
 
       dynamicFields.push({ nameIT, nameDE, type });
       renderDynamicFields();
-
-      document.getElementById('fieldNameIT').value = '';
-      document.getElementById('fieldNameDE').value = '';
       closeFieldBuilderModal();
     }
 
@@ -306,15 +467,9 @@
 
         if (field.type === 'checkbox') {
           div.className = 'flex items-center space-x-2';
-          div.innerHTML = `
-            <input type="checkbox" class="text-emerald-600 rounded focus:ring-emerald-500">
-            <label class="text-sm text-slate-700">${labelText}</label>
-          `;
+          div.innerHTML = `<input type="checkbox" class="text-emerald-600 rounded focus:ring-emerald-500"><label class="text-sm text-slate-700">${labelText}</label>`;
         } else {
-          div.innerHTML = `
-            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">${labelText}</label>
-            <input type="${field.type}" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-          `;
+          div.innerHTML = `<label class="block text-xs font-semibold text-slate-600 uppercase mb-1">${labelText}</label><input type="${field.type}" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">`;
         }
         container.appendChild(div);
       });
@@ -322,12 +477,11 @@
 
     function handleFormSubmit(event) {
       event.preventDefault();
-
       const nameInput = document.getElementById('athleteName').value;
       const emailInput = document.getElementById('parentEmail').value;
       const selectedClub = document.querySelector('input[name="club"]:checked').value;
       
-      const tbody = document.querySelector('tbody');
+      const tbody = document.querySelector('#section-athletes tbody');
       const newRow = document.createElement('tr');
 
       newRow.innerHTML = `
@@ -342,14 +496,6 @@
       `;
 
       tbody.appendChild(newRow);
-
-      const totalElement = document.querySelector('.text-3xl.font-extrabold.text-slate-900');
-      if (totalElement) {
-        totalElement.textContent = parseInt(totalElement.textContent) + 1;
-      }
-
-      document.getElementById('athleteName').value = '';
-      document.getElementById('parentEmail').value = '';
       closeCheckoutModal();
     }
   </script>
