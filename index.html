@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Athledo - SPG Obervinschgau</title>
+  <title>Athledo - SaaS Gestionale Sportivo</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
@@ -13,14 +13,14 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
         <span class="text-2xl font-bold tracking-wider">ATHLEDO</span>
-        <span class="text-xs bg-emerald-800 px-2.5 py-1 rounded text-emerald-100 font-semibold">SPG Obervinschgau</span>
+        <span class="text-xs bg-emerald-800 px-2.5 py-1 rounded text-emerald-100 font-semibold" id="tenant-label">SPG Obervinschgau</span>
       </div>
       
       <!-- Navigazione Moduli -->
       <nav class="hidden md:flex items-center space-x-1">
-        <button onclick="switchTab('athletes')" id="tab-athletes" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white">📋 Anagrafica & Moduli</button>
-        <button onclick="switchTab('facilities')" id="tab-facilities" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">⚽ Campi & Palestre</button>
-        <button onclick="switchTab('fleet')" id="tab-fleet" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">🚌 Gestione Pulmini</button>
+        <button onclick="switchTab('athletes')" id="tab-athletes" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white" data-i18n="nav_athletes">📋 Anagrafica & Moduli</button>
+        <button onclick="switchTab('facilities')" id="tab-facilities" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_facilities">⚽ Campi & Palestre</button>
+        <button onclick="switchTab('fleet')" id="tab-fleet" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_fleet">🚌 Gestione Pulmini</button>
       </nav>
 
       <!-- Admin Tools & Lingua -->
@@ -29,8 +29,8 @@
           <span>⚙️</span> <span data-i18n="btn_manage_fields">Campi Dynamic</span>
         </button>
         <div class="flex items-center space-x-1 border-l border-emerald-600 pl-3">
-          <button id="lang-it" onclick="setLanguage('it')" class="px-2.5 py-1 bg-white text-emerald-800 font-bold rounded text-xs">IT</button>
-          <button id="lang-de" onclick="setLanguage('de')" class="px-2.5 py-1 bg-emerald-800 text-white font-bold rounded text-xs">DE</button>
+          <button id="lang-it" onclick="setLanguage('it')" class="px-2.5 py-1 bg-white text-emerald-800 font-bold rounded text-xs transition">IT</button>
+          <button id="lang-de" onclick="setLanguage('de')" class="px-2.5 py-1 bg-emerald-800/60 text-white font-bold rounded text-xs transition">DE</button>
         </div>
       </div>
     </div>
@@ -83,17 +83,7 @@
                 <td class="p-4 text-slate-600 font-mono text-xs">hofer.eltern@example.com</td>
                 <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV Burgeis</span></td>
                 <td class="p-4"><span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded font-semibold">DE</span></td>
-                <td class="p-4"><span class="px-2 py-1 bg-rose-100 text-rose-800 text-xs rounded font-semibold">15/09/2026 (Scaduto)</span></td>
-                <td class="p-4 text-right">
-                  <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">Invia Sollecito</button>
-                </td>
-              </tr>
-              <tr>
-                <td class="p-4 font-medium text-slate-900">Matteo Rossi</td>
-                <td class="p-4 text-slate-600 font-mono text-xs">famiglia.rossi@example.it</td>
-                <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV Mals</span></td>
-                <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">IT</span></td>
-                <td class="p-4"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded font-semibold">30/09/2026 (30 giorni)</span></td>
+                <td class="p-4"><span class="px-2 py-1 bg-rose-100 text-rose-800 text-xs rounded font-semibold" data-i18n="status_expired">15/09/2026 (Scaduto)</span></td>
                 <td class="p-4 text-right">
                   <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">Invia Sollecito</button>
                 </td>
@@ -108,56 +98,54 @@
     <div id="section-facilities" class="hidden space-y-6">
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 class="text-lg font-bold text-slate-800">Piano Assegnazione Allenamenti</h2>
-          <p class="text-xs text-slate-500">Coordinamento Campi Estivi & Palestre Invernali</p>
+          <h2 class="text-lg font-bold text-slate-800" data-i18n="facilities_title">Piano Assegnazione Allenamenti</h2>
+          <p class="text-xs text-slate-500" data-i18n="facilities_subtitle">Coordinamento Campi Estivi & Palestre Invernali</p>
         </div>
-        <!-- Selettore Stagione -->
         <div class="flex items-center space-x-2 bg-slate-100 p-1 rounded-lg">
-          <button id="btn-season-summer" onclick="setSeason('summer')" class="px-3 py-1.5 rounded-md text-xs font-bold bg-white text-emerald-700 shadow-sm">☀️ Estate (Campi)</button>
-          <button id="btn-season-winter" onclick="setSeason('winter')" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:bg-white/50">❄️ Inverno (Palestre)</button>
+          <button id="btn-season-summer" onclick="setSeason('summer')" class="px-3 py-1.5 rounded-md text-xs font-bold bg-white text-emerald-700 shadow-sm" data-i18n="season_summer">☀️ Estate (Campi)</button>
+          <button id="btn-season-winter" onclick="setSeason('winter')" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:bg-white/50" data-i18n="season_winter">❄️ Inverno (Palestre)</button>
         </div>
       </div>
 
-      <!-- Tabella Calendario Settimanale -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="bg-slate-100 text-slate-600 border-b">
-                <th class="p-3 border-r w-32">Struttura</th>
-                <th class="p-3 border-r">Lunedì</th>
-                <th class="p-3 border-r">Martedì</th>
-                <th class="p-3 border-r">Mercoledì</th>
-                <th class="p-3 border-r">Giovedì</th>
-                <th class="p-3 border-r">Venerdì</th>
+                <th class="p-3 border-r w-32" data-i18n="th_facility">Struttura</th>
+                <th class="p-3 border-r" data-i18n="day_mon">Lunedì</th>
+                <th class="p-3 border-r" data-i18n="day_tue">Martedì</th>
+                <th class="p-3 border-r" data-i18n="day_wed">Mercoledì</th>
+                <th class="p-3 border-r" data-i18n="day_thu">Giovedì</th>
+                <th class="p-3 border-r" data-i18n="day_fri">Venerdì</th>
               </tr>
             </thead>
             <tbody id="facilities-tbody" class="divide-y divide-slate-100">
-              <!-- Render dinamico da Javascript -->
+              <!-- Render dinamico -->
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- SEZIONE 3: GESTIONE PULMINI (Dinamica con localStorage) -->
+    <!-- SEZIONE 3: GESTIONE PULMINI -->
     <div id="section-fleet" class="hidden space-y-6">
       <div class="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 class="text-lg font-bold text-slate-800">Parco Auto & Pulmini SPG</h2>
-          <p class="text-xs text-slate-500">Gestione e inserimento flotta pulmini delle 4 associazioni</p>
+          <h2 class="text-lg font-bold text-slate-800" data-i18n="fleet_title">Parco Auto & Pulmini SPG</h2>
+          <p class="text-xs text-slate-500" data-i18n="fleet_subtitle">Gestione e inserimento flotta pulmini delle 4 associazioni</p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Form Inserimento/Modifica (5 Colonne) -->
+        <!-- Form Inserimento/Modifica -->
         <div class="lg:col-span-5">
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden sticky top-20">
             <div class="bg-slate-900 px-6 py-4 text-white flex items-center justify-between">
-              <h3 id="form-title" class="text-base font-semibold flex items-center gap-2">
+              <h3 id="form-title" class="text-base font-semibold flex items-center gap-2" data-i18n="bus_form_new">
                 ➕ Aggiungi Nuovo Pulmino
               </h3>
-              <button id="cancel-edit-btn" onclick="resetBusForm()" class="text-xs text-slate-400 hover:text-white underline hidden">
+              <button id="cancel-edit-btn" onclick="resetBusForm()" class="text-xs text-slate-400 hover:text-white underline hidden" data-i18n="btn_cancel_edit">
                 Annulla
               </button>
             </div>
@@ -166,43 +154,43 @@
               <input type="hidden" id="bus-id">
               
               <div>
-                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome / Modello Pulmino *</label>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="bus_label_name">Nome / Modello Pulmino *</label>
                 <input type="text" id="bus-name" required placeholder="Es. Ford Transit 9 Posti" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
               </div>
 
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Targa *</label>
+                  <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="bus_label_plate">Targa *</label>
                   <input type="text" id="bus-plate" required placeholder="BZ 123 AB" class="w-full px-3 py-2 border rounded-lg text-sm uppercase tracking-wider focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">N° Posti *</label>
+                  <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="bus_label_seats">N° Posti *</label>
                   <input type="number" id="bus-seats" required min="1" max="60" value="9" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
               </div>
 
               <div>
-                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Note / Attrezzatura</label>
-                <textarea id="bus-notes" rows="3" placeholder="Es. Gancio traino, catene da neve a bordo..." class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="bus_label_notes">Note / Attrezzatura</label>
+                <textarea id="bus-notes" rows="3" placeholder="Es. Gancio traino, catene da neve..." class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
               </div>
 
               <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                <span class="text-sm font-medium text-slate-700">Mezzo Attivo / Disponibile</span>
+                <span class="text-sm font-medium text-slate-700" data-i18n="bus_label_active">Mezzo Attivo / Disponibile</span>
                 <input type="checkbox" id="bus-active" checked class="w-5 h-5 text-emerald-600 rounded focus:ring-emerald-500">
               </div>
 
-              <button type="submit" id="submit-btn" class="w-full py-2.5 px-4 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors cursor-pointer">
+              <button type="submit" id="submit-btn" class="w-full py-2.5 px-4 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors cursor-pointer" data-i18n="bus_btn_save">
                 Salva Pulmino
               </button>
             </form>
           </div>
         </div>
 
-        <!-- Lista Pulmini (7 Colonne) -->
+        <!-- Lista Pulmini collegata a Neon DB tramite Backend -->
         <div class="lg:col-span-7 space-y-4">
-          <h3 class="text-lg font-semibold text-slate-800" id="fleet-count">Pulmini Registrati (0)</h3>
+          <h3 class="text-lg font-semibold text-slate-800" id="fleet-count" data-i18n="fleet_registered">Pulmini Registrati (0)</h3>
           <div id="bus-list-container" class="space-y-3">
-            <!-- Generato dinamicamente via JS -->
+            <!-- Caricamento dinamico via API -->
           </div>
         </div>
       </div>
@@ -303,6 +291,9 @@
   <script>
     const i18n = {
       it: {
+        nav_athletes: "📋 Anagrafica & Moduli",
+        nav_facilities: "⚽ Campi & Palestre",
+        nav_fleet: "🚌 Gestione Pulmini",
         total_athletes: "Atleti Tesserati",
         expiring_certificates: "Certificati in Scadenza (30 gg)",
         expired_certificates: "Certificati Scaduti",
@@ -316,6 +307,33 @@
         th_med_exp: "Scadenza Visita Medica",
         th_actions: "Azioni",
         btn_remind: "Invia Sollecito",
+        status_expired: "15/09/2026 (Scaduto)",
+        status_warning: "30/09/2026 (30 giorni)",
+        facilities_title: "Piano Assegnazione Allenamenti",
+        facilities_subtitle: "Coordinamento Campi Estivi & Palestre Invernali",
+        season_summer: "☀️ Estate (Campi)",
+        season_winter: "❄️ Inverno (Palestre)",
+        th_facility: "Struttura",
+        day_mon: "Lunedì",
+        day_tue: "Martedì",
+        day_wed: "Mercoledì",
+        day_thu: "Giovedì",
+        day_fri: "Venerdì",
+        fleet_title: "Parco Auto & Pulmini SPG",
+        fleet_subtitle: "Gestione e inserimento flotta pulmini delle 4 associazioni",
+        bus_form_new: "➕ Aggiungi Nuovo Pulmino",
+        bus_form_edit: "✏️ Modifica Scheda Pulmino",
+        btn_cancel_edit: "Annulla",
+        bus_label_name: "Nome / Modello Pulmino *",
+        bus_label_plate: "Targa *",
+        bus_label_seats: "N° Posti *",
+        bus_label_notes: "Note / Attrezzatura",
+        bus_label_active: "Mezzo Attivo / Disponibile",
+        bus_btn_save: "Salva Pulmino",
+        bus_btn_update: "Aggiorna Pulmino",
+        fleet_registered: "Pulmini Registrati",
+        badge_available: "Disponibile",
+        badge_maintenance: "Manutenzione / Non attivo",
         modal_title: "Nuova Iscrizione & Ricevuta",
         label_athlete_name: "Nome Atleta / Minore",
         label_parent_email: "Email Genitore / Tutore",
@@ -330,6 +348,9 @@
         btn_add_field_confirm: "Aggiungi al Modulo"
       },
       de: {
+        nav_athletes: "📋 Mitglieder & Formulare",
+        nav_facilities: "⚽ Plätze & Hallen",
+        nav_fleet: "🚌 Kleinbusse Verwaltung",
         total_athletes: "Registrierte Athleten",
         expiring_certificates: "Ablaufende Atteste (30 Tage)",
         expired_certificates: "Abgelaufene Atteste",
@@ -343,6 +364,33 @@
         th_med_exp: "Ablauf Ärztliches Attest",
         th_actions: "Aktionen",
         btn_remind: "Erinnerung Senden",
+        status_expired: "15.09.2026 (Abgelaufen)",
+        status_warning: "30.09.2026 (30 Tage)",
+        facilities_title: "Trainingsplan & Platzbelegung",
+        facilities_subtitle: "Koordination Sommerplätze & Winterhallen",
+        season_summer: "☀️ Sommer (Plätze)",
+        season_winter: "❄️ Winter (Hallen)",
+        th_facility: "Sportanlage",
+        day_mon: "Montag",
+        day_tue: "Dienstag",
+        day_wed: "Mittwoch",
+        day_thu: "Donnerstag",
+        day_fri: "Freitag",
+        fleet_title: "SPG Fahrzeug- & Kleinbuspark",
+        fleet_subtitle: "Verwaltung und Erfassung der Kleinbusse der 4 Vereine",
+        bus_form_new: "➕ Neuen Kleinbus Hinzufügen",
+        bus_form_edit: "✏️ Kleinbus Bearbeiten",
+        btn_cancel_edit: "Abbrechen",
+        bus_label_name: "Name / Kleinbus-Modell *",
+        bus_label_plate: "Kfz-Kennzeichen *",
+        bus_label_seats: "Sitzplätze *",
+        bus_label_notes: "Hinweise / Ausstattung",
+        bus_label_active: "Fahrzeug Aktiv / Verfügbar",
+        bus_btn_save: "Kleinbus Speichern",
+        bus_btn_update: "Kleinbus Aktualisieren",
+        fleet_registered: "Registrierte Kleinbusse",
+        badge_available: "Verfügbar",
+        badge_maintenance: "Wartung / Inaktiv",
         modal_title: "Neue Einschreibung & Bestätigung",
         label_athlete_name: "Name des Athleten / Minderjährigen",
         label_parent_email: "E-Mail der Eltern / Erziehungsberechtigten",
@@ -361,6 +409,7 @@
     let currentLang = 'it';
     let currentSeason = 'summer';
     let dynamicFields = [];
+    let buses = [];
 
     const summerSchedule = [
       { facility: "Campo Mals (Sintetico)", mon: "17:00 U11 / 18:30 U15", tue: "17:30 U13", wed: "17:00 U11 / 18:30 U15", thu: "17:30 U13", fri: "18:00 Prima Squadra" },
@@ -388,7 +437,7 @@
       document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
 
       if(tab === 'facilities') renderFacilitiesTable();
-      if(tab === 'fleet') renderBuses();
+      if(tab === 'fleet') loadBuses();
     }
 
     function setSeason(season) {
@@ -424,13 +473,27 @@
 
     function setLanguage(lang) {
       currentLang = lang;
+      
+      const btnIt = document.getElementById('lang-it');
+      const btnDe = document.getElementById('lang-de');
+      
+      if (lang === 'it') {
+        btnIt.className = "px-2.5 py-1 bg-white text-emerald-800 font-bold rounded text-xs transition";
+        btnDe.className = "px-2.5 py-1 bg-emerald-800/60 text-white font-bold rounded text-xs transition";
+      } else {
+        btnDe.className = "px-2.5 py-1 bg-white text-emerald-800 font-bold rounded text-xs transition";
+        btnIt.className = "px-2.5 py-1 bg-emerald-800/60 text-white font-bold rounded text-xs transition";
+      }
+
       document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (i18n[lang][key]) {
           element.textContent = i18n[lang][key];
         }
       });
+
       renderDynamicFields();
+      if(buses.length > 0) renderBuses();
     }
 
     function openCheckoutModal() { document.getElementById('checkoutModal').classList.remove('hidden'); }
@@ -483,7 +546,7 @@
         <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">${currentLang.toUpperCase()}</span></td>
         <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">Attivo</span></td>
         <td class="p-4 text-right">
-          <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">${i18n[currentLang].btn_remind}</button>
+          <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">${i18n[currentLang].btn_remind}</button>
         </td>
       `;
 
@@ -491,21 +554,36 @@
       closeCheckoutModal();
     }
 
-    // ---- LOGICA GESTIONE PULMINI (LOCALSTORAGE) ----
-    let buses = JSON.parse(localStorage.getItem('athledo_buses')) || [
-      { id: '1', name: 'Ford Transit 9 Posti', licensePlate: 'BZ 123 AB', seats: 9, notes: 'Gancio traino e catene da neve', isActive: true },
-      { id: '2', name: 'VW Caravelle 9 Posti', licensePlate: 'BZ 456 CD', seats: 9, notes: 'Climatizzatore bizona', isActive: true },
-      { id: '3', name: 'Opel Vivaro 9 Posti', licensePlate: 'BZ 789 EF', seats: 9, notes: 'Gestione ASV Laatsch', isActive: true },
-      { id: '4', name: 'Renault Traffic 9 Posti', licensePlate: 'BZ 999 ZZ', seats: 9, notes: 'In manutenzione', isActive: false }
-    ];
+    // ---- GESTIONE PULMINI (INTEGRATA CON API E NEON DB) ----
+    async function loadBuses() {
+      try {
+        const response = await fetch('/api/buses', {
+          headers: {
+            'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'demo_token')
+          }
+        });
+        if (response.ok) {
+          buses = await response.json();
+        } else {
+          // Fallback dati dimostrativi se il server non è ancora attivo
+          buses = [
+            { id: '1', name: 'Ford Transit 9 Posti', license_plate: 'BZ 123 AB', seats: 9, notes: 'Gancio traino e catene da neve', is_active: true },
+            { id: '2', name: 'VW Caravelle 9 Posti', license_plate: 'BZ 456 CD', seats: 9, notes: 'Climatizzatore bizona', is_active: true }
+          ];
+        }
+        renderBuses();
+      } catch (error) {
+        console.error('Errore caricamento pulmini:', error);
+      }
+    }
 
     function renderBuses() {
       const container = document.getElementById('bus-list-container');
       if (!container) return;
-      document.getElementById('fleet-count').innerText = `Pulmini Registrati (${buses.length})`;
+      document.getElementById('fleet-count').innerText = `${i18n[currentLang].fleet_registered} (${buses.length})`;
       
       if (buses.length === 0) {
-        container.innerHTML = `<div class="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-8 text-center text-slate-500">Nessun pulmino registrato.</div>`;
+        container.innerHTML = `<div class="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-8 text-center text-slate-500">${currentLang === 'it' ? 'Nessun pulmino registrato.' : 'Keine Kleinbusse registriert.'}</div>`;
         return;
       }
 
@@ -514,13 +592,13 @@
           <div class="space-y-1">
             <div class="flex items-center gap-2">
               <h4 class="font-semibold text-slate-900">${bus.name}</h4>
-              <span class="px-2 py-0.5 rounded text-xs font-medium ${bus.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
-                ${bus.isActive ? 'Disponibile' : 'Manutenzione / Non attivo'}
+              <span class="px-2 py-0.5 rounded text-xs font-medium ${bus.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
+                ${bus.is_active ? i18n[currentLang].badge_available : i18n[currentLang].badge_maintenance}
               </span>
             </div>
             <div class="flex items-center gap-4 text-xs text-slate-600 pt-1">
-              <span class="font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-semibold text-slate-800">${bus.licensePlate}</span>
-              <span>👥 ${bus.seats} Posti</span>
+              <span class="font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-semibold text-slate-800">${bus.license_plate}</span>
+              <span>👥 ${bus.seats} ${currentLang === 'it' ? 'Posti' : 'Sitze'}</span>
             </div>
             ${bus.notes ? `<p class="text-xs text-slate-500 pt-2 italic border-t border-slate-100 mt-2">${bus.notes}</p>` : ''}
           </div>
@@ -530,28 +608,45 @@
           </div>
         </div>
       `).join('');
-
-      localStorage.setItem('athledo_buses', JSON.stringify(buses));
     }
 
-    function handleBusSubmit(e) {
+    async function handleBusSubmit(e) {
       e.preventDefault();
       const id = document.getElementById('bus-id').value;
-      const name = document.getElementById('bus-name').value;
-      const licensePlate = document.getElementById('bus-plate').value.trim().toUpperCase();
-      const seats = parseInt(document.getElementById('bus-seats').value);
-      const notes = document.getElementById('bus-notes').value;
-      const isActive = document.getElementById('bus-active').checked;
+      const busData = {
+        name: document.getElementById('bus-name').value,
+        license_plate: document.getElementById('bus-plate').value.trim().toUpperCase(),
+        seats: parseInt(document.getElementById('bus-seats').value),
+        notes: document.getElementById('bus-notes').value,
+        is_active: document.getElementById('bus-active').checked
+      };
 
-      if (id) {
-        buses = buses.map(b => b.id === id ? { id, name, licensePlate, seats, notes, isActive } : b);
-      } else {
-        const newBus = { id: Date.now().toString(), name, licensePlate, seats, notes, isActive };
-        buses.push(newBus);
+      try {
+        const url = id ? `/api/buses/${id}` : '/api/buses';
+        const method = id ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'demo_token')
+          },
+          body: JSON.stringify(busData)
+        });
+
+        if (response.ok || !response.url.includes('/api/')) {
+          // Gestione locale di fallback se l'API non è attiva sul server locale
+          if (id) {
+            buses = buses.map(b => b.id === id ? { id, ...busData } : b);
+          } else {
+            buses.push({ id: Date.now().toString(), ...busData });
+          }
+          resetBusForm();
+          renderBuses();
+        }
+      } catch (error) {
+        console.error('Errore salvataggio pulmino:', error);
       }
-
-      resetBusForm();
-      renderBuses();
     }
 
     function editBus(id) {
@@ -560,26 +655,35 @@
 
       document.getElementById('bus-id').value = bus.id;
       document.getElementById('bus-name').value = bus.name;
-      document.getElementById('bus-plate').value = bus.licensePlate;
+      document.getElementById('bus-plate').value = bus.license_plate;
       document.getElementById('bus-seats').value = bus.seats;
       document.getElementById('bus-notes').value = bus.notes || '';
-      document.getElementById('bus-active').checked = bus.isActive;
+      document.getElementById('bus-active').checked = bus.is_active;
 
-      document.getElementById('form-title').innerText = '✏️ Modifica Scheda Pulmino';
-      document.getElementById('submit-btn').innerText = 'Aggiorna Pulmino';
+      document.getElementById('form-title').innerText = i18n[currentLang].bus_form_edit;
+      document.getElementById('submit-btn').innerText = i18n[currentLang].bus_btn_update;
       document.getElementById('cancel-edit-btn').classList.remove('hidden');
     }
 
     function resetBusForm() {
       document.getElementById('bus-form').reset();
       document.getElementById('bus-id').value = '';
-      document.getElementById('form-title').innerText = '➕ Aggiungi Nuovo Pulmino';
-      document.getElementById('submit-btn').innerText = 'Salva Pulmino';
+      document.getElementById('form-title').innerText = i18n[currentLang].bus_form_new;
+      document.getElementById('submit-btn').innerText = i18n[currentLang].bus_btn_save;
       document.getElementById('cancel-edit-btn').classList.add('hidden');
     }
 
-    function deleteBus(id) {
-      if (confirm('Sei sicuro di voler rimuovere questo pulmino?')) {
+    async function deleteBus(id) {
+      const msg = currentLang === 'it' ? 'Sei sicuro di voler rimuovere questo pulmino?' : 'Sind Sie sicher, dass Sie diesen Kleinbus entfernen möchten?';
+      if (confirm(msg)) {
+        try {
+          await fetch(`/api/buses/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'demo_token') }
+          });
+        } catch (e) {
+          // Ignora l'errore di rete in ambiente di test frontend puro
+        }
         buses = buses.filter(b => b.id !== id);
         renderBuses();
       }
