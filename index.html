@@ -98,10 +98,10 @@
         <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
       </div>
 
-      <form onsubmit="event.preventDefault(); alert('Iscrizione salvata!'); closeCheckoutModal();" class="space-y-4">
+      <form onsubmit="handleFormSubmit(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_athlete_name">Nome Atleta / Minore</label>
-          <input type="text" placeholder="Es. Jonas Kofler" required class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+          <input type="text" id="athleteName" placeholder="Es. Jonas Kofler" required class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
         </div>
 
         <!-- SPUNTE PER LA RICEVUTA FISCALE -->
@@ -140,7 +140,7 @@
     </div>
   </div>
 
-  <!-- JavaScript i18n Logic -->
+  <!-- JavaScript i18n & Dynamic Logic -->
   <script>
     const i18n = {
       it: {
@@ -183,7 +183,10 @@
       }
     };
 
+    let currentLang = 'it';
+
     function setLanguage(lang) {
+      currentLang = lang;
       document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (i18n[lang][key]) {
@@ -205,6 +208,36 @@
 
     function closeCheckoutModal() {
       document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const nameInput = document.getElementById('athleteName').value;
+      const selectedClub = document.querySelector('input[name="club"]:checked').value;
+      
+      const tbody = document.querySelector('tbody');
+      const newRow = document.createElement('tr');
+
+      newRow.innerHTML = `
+        <td class="p-4 font-medium text-slate-900">${nameInput}</td>
+        <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV ${selectedClub}</span></td>
+        <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">${currentLang.toUpperCase()}</span></td>
+        <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">Attivo</span></td>
+        <td class="p-4 text-right">
+          <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs" data-i18n="btn_remind">${i18n[currentLang].btn_remind}</button>
+        </td>
+      `;
+
+      tbody.appendChild(newRow);
+
+      const totalElement = document.querySelector('.text-3xl.font-extrabold.text-slate-900');
+      if (totalElement) {
+        totalElement.textContent = parseInt(totalElement.textContent) + 1;
+      }
+
+      document.getElementById('athleteName').value = '';
+      closeCheckoutModal();
     }
   </script>
 </body>
