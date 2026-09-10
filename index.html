@@ -23,6 +23,25 @@
         <button onclick="switchTab('fleet')" id="tab-fleet" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_fleet">🚌 Gestione Pulmini</button>
       </nav>
 
+      window.switchTab = function(tab) {
+      document.getElementById('section-athletes').classList.add('hidden');
+      document.getElementById('section-facilities').classList.add('hidden');
+      document.getElementById('section-fleet').classList.add('hidden');
+
+      document.getElementById('tab-athletes').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+      document.getElementById('tab-facilities').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+      document.getElementById('tab-fleet').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+
+      document.getElementById(`section-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
+
+      if(tab === 'facilities') {
+        renderFacilitiesTable();
+        loadFacilitiesFromDB(); // <-- AGGIUNGI QUI
+      }
+      if(tab === 'fleet') loadBuses();
+    };
+      
       <!-- Admin Tools & Lingua -->
       <div class="flex items-center space-x-3">
         <button onclick="openFieldBuilderModal()" class="px-3 py-1 bg-emerald-800 hover:bg-emerald-900 text-emerald-100 text-xs font-semibold rounded border border-emerald-600 flex items-center gap-1 transition">
@@ -96,7 +115,28 @@
 
     <!-- SEZIONE 2: CAMPI & PALESTRE -->
     <div id="section-facilities" class="hidden space-y-6">
-      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+
+      <!-- NUOVA FORM DI INSERIMENTO CAMPI -->
+  <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+    <h3 class="text-base font-semibold text-slate-800">➕ Aggiungi / Modifica Struttura</h3>
+    <form id="facility-form" onsubmit="handleFacilitySubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <input type="hidden" id="facility-id">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome Struttura *</label>
+        <input type="text" id="facility-name" required placeholder="Es. Campo Sintetico Mals" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tipo *</label>
+        <select id="facility-type" class="w-full px-3 py-2 border rounded-lg text-sm bg-white outline-none">
+          <option value="summer">☀️ Estiva (Campo)</option>
+          <option value="winter">❄️ Invernale (Palestra)</option>
+        </select>
+      </div>
+      <div class="md:col-span-2 flex items-end">
+        <button type="submit" class="w-full py-2 px-4 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition">Salva Struttura</button>
+      </div>
+    </form>
+  </div><div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 class="text-lg font-bold text-slate-800" data-i18n="facilities_title">Piano Assegnazione Allenamenti</h2>
           <p class="text-xs text-slate-500" data-i18n="facilities_subtitle">Coordinamento Campi Estivi & Palestre Invernali</p>
@@ -150,6 +190,28 @@
               </button>
             </div>
 
+<!-- Form Gestione Campi & Palestre -->
+<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+  <h3 class="text-base font-semibold text-slate-800">➕ Aggiungi / Modifica Struttura</h3>
+  <form id="facility-form" onsubmit="handleFacilitySubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <input type="hidden" id="facility-id">
+    <div>
+      <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome Struttura *</label>
+      <input type="text" id="facility-name" required placeholder="Es. Campo Sintetico Mals" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tipo *</label>
+      <select id="facility-type" class="w-full px-3 py-2 border rounded-lg text-sm bg-white outline-none">
+        <option value="summer">☀️ Estiva (Campo)</option>
+        <option value="winter">❄️ Invernale (Palestra)</option>
+      </select>
+    </div>
+    <div class="md:col-span-2 flex items-end">
+      <button type="submit" class="w-full py-2 px-4 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition">Salva Struttura</button>
+    </div>
+  </form>
+</div>
+            
             <form id="bus-form" onsubmit="handleBusSubmit(event)" class="p-6 space-y-4">
               <input type="hidden" id="bus-id">
               
@@ -694,7 +756,56 @@
     // Inizializzazione al caricamento
     window.addEventListener('DOMContentLoaded', () => {
       loadBuses();
+      loadFacilitiesFromDB(); // <-- AGGIUNGI QUI
     });
+    // ---- GESTIONE CAMPI & PALESTRE ----
+const FACILITIES_API_URL = 'http://localhost:3000/api/facilities';
+let dynamicFacilities = [];
+
+async function loadFacilitiesFromDB() {
+  try {
+    const response = await fetch(FACILITIES_API_URL, {
+      headers: { 'x-tenant-id': TENANT_ID }
+    });
+    if (response.ok) {
+      dynamicFacilities = await response.json();
+      // Se vuoi unire i dati del DB alla tabella statica esistente:
+      console.log("Strutture caricate:", dynamicFacilities);
+    }
+  } catch (error) {
+    console.error('Errore caricamento strutture:', error);
+  }
+}
+
+window.handleFacilitySubmit = async function(event) {
+  event.preventDefault();
+  const id = document.getElementById('facility-id').value;
+  const endpoint = id ? `${FACILITIES_API_URL}/${id}` : FACILITIES_API_URL;
+  const method = id ? 'PUT' : 'POST';
+
+  const data = {
+    name: document.getElementById('facility-name').value,
+    type: document.getElementById('facility-type').value,
+  };
+
+  try {
+    const response = await fetch(endpoint, {
+      method: method,
+      headers: { 'Content-Type': 'application/json', 'x-tenant-id': TENANT_ID },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      document.getElementById('facility-form').reset();
+      document.getElementById('facility-id').value = '';
+      loadFacilitiesFromDB();
+    } else {
+      alert('Errore durante il salvataggio della struttura.');
+    }
+  } catch (error) {
+    console.error('Errore di rete:', error);
+  }
+};
   </script>
 </body>
 </html>
