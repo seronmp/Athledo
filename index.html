@@ -96,7 +96,32 @@
 
     <!-- SEZIONE 2: CAMPI & PALESTRE -->
     <div id="section-facilities" class="hidden space-y-6">
-      
+
+      <!-- Box Generatore WhatsApp -->
+      <div id="wa-container" class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        <h3 class="text-sm font-bold text-slate-800 mb-3">📱 Genera Orario per WhatsApp</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Squadra</label>
+            <input type="text" id="wa-team" class="w-full rounded-lg border border-slate-300 text-xs p-2" placeholder="Es. Allievi U17">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Struttura / Campo</label>
+            <select id="wa-facility" class="w-full rounded-lg border border-slate-300 text-xs p-2">
+              <option>Campo Principale</option>
+              <option>Campo Sintetico</option>
+              <option>Palestra Comunale</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Orario</label>
+            <input type="text" id="wa-time" class="w-full rounded-lg border border-slate-300 text-xs p-2" placeholder="Es. Martedì 18:00 - 19:30">
+          </div>
+        </div>
+        <button onclick="generateWhatsAppPreview()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition">
+          Genera Anteprima WhatsApp 🚀
+        </button>
+      </div>      
       <!-- Form Aggiunta/Modifica Strutture -->
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
         <h3 id="facility-form-title" class="text-base font-semibold text-slate-800">➕ Aggiungi / Modifica Struttura</h3>
@@ -595,7 +620,36 @@
         renderFacilitiesTable();
       }
     }
+// ---- GENERATORE WHATSAPP PER CAMPI ----
+function generateWhatsAppPreview() {
+  const team = document.getElementById('wa-team').value || "Squadra";
+  const facility = document.getElementById('wa-facility').value || "Campo";
+  const time = document.getElementById('wa-time').value || "Orario";
 
+  const message = `⚽ *SPG Obervinschgau - Assegnazione Campo* ⚽\n\n` +
+                  `👤 *Squadra:* ${team}\n` +
+                  `🏟️ *Struttura:* ${facility}\n` +
+                  `🕒 *Orario:* ${time}\n\n` +
+                  `Si prega di rispettare gli orari indicati. Buon allenamento! 💪`;
+
+  const encodedMessage = encodeURIComponent(message);
+  
+  let previewBox = document.getElementById('whatsapp-output');
+  if (!previewBox) {
+    previewBox = document.createElement('div');
+    previewBox.id = 'whatsapp-output';
+    previewBox.className = 'mt-4 p-4 bg-gray-50 rounded-md border';
+    document.getElementById('wa-container')?.appendChild(previewBox);
+  }
+
+  previewBox.innerHTML = `
+    <h4 class="font-bold text-gray-800 mb-2">Anteprima Testo WhatsApp:</h4>
+    <p class="bg-white p-3 rounded border text-sm whitespace-pre-line mb-3">${message}</p>
+    <a href="https://wa.me/?text=${encodedMessage}" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded text-sm inline-block font-bold hover:bg-green-600">
+      Invia direttamente su WhatsApp 🚀
+    </a>
+  `;
+}
     window.handleFacilitySubmit = async function(event) {
       event.preventDefault();
       const id = document.getElementById('facility-id').value;
