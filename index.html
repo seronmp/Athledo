@@ -5,30 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Athledo - SaaS Gestionale Sportivo</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Inserisci qui l'SDK di Supabase se non è incluso altrove -->
+  <!-- SDK di Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-  <!-- 1. SCHERMATA DI LOGIN (Visibile di default finché non c'è una sessione) -->
+  <!-- 1. SCHERMATA DI LOGIN -->
   <div id="login-container" class="max-w-md mx-auto mt-20 bg-white p-6 rounded-xl shadow-md border border-slate-200">
     <h3 class="text-sm font-bold text-slate-800 mb-4">🔐 Accesso Riservato - Athledo</h3>
-    <div class="space-y-3">
+    <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-3">
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">Email</label>
-        <input type="email" id="login-email" class="w-full rounded border border-slate-300 text-xs p-2" placeholder="tua-email@dominio.it">
+        <input type="email" id="login-email" required class="w-full rounded border border-slate-300 text-xs p-2" placeholder="tua-email@dominio.it">
       </div>
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">Password</label>
-        <input type="password" id="login-password" class="w-full rounded border border-slate-300 text-xs p-2">
+        <input type="password" id="login-password" required class="w-full rounded border border-slate-300 text-xs p-2">
       </div>
-      <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 rounded transition">
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 rounded transition">
         Accedi
       </button>
-    </div>
+    </form>
   </div>
 
-  <!-- 2. CONTENUTO DELL'APP (Nascosto di default grazie a "hidden") -->
+  <!-- 2. CONTENUTO DELL'APP (Nascosto di default) -->
   <div id="app-content" class="hidden flex-1 flex flex-col">
 
     <!-- Header & Navigation -->
@@ -152,25 +152,6 @@
                   <div class="p-1 bg-rose-100 rounded border border-rose-200">U10</div>
                 </td>
                 <td class="p-1 border-r border-slate-200"></td>
-                <td class="p-1"></td>
-              </tr>
-              <tr class="h-12">
-                <td class="font-bold bg-slate-50 border-r border-slate-300 text-slate-600">16:30</td>
-                <td class="p-1 border-r border-slate-200 bg-amber-50 text-amber-900">
-                  <div class="p-1 bg-amber-100 rounded border border-amber-200">U8 Mädels</div>
-                </td>
-                <td class="p-1 border-r border-slate-200 bg-blue-50 text-blue-900">
-                  <div class="p-1 bg-blue-100 rounded border border-blue-200">U9</div>
-                </td>
-                <td class="p-1 border-r border-slate-200 bg-emerald-50 text-emerald-900">
-                  <div class="p-1 bg-emerald-100 rounded border border-emerald-200">U8 geb. i-d</div>
-                </td>
-                <td class="p-1 border-r border-slate-200 bg-rose-50 text-rose-900">
-                  <div class="p-1 bg-rose-100 rounded border border-rose-200">U10</div>
-                </td>
-                <td class="p-1 border-r border-slate-200 bg-indigo-50 text-indigo-900">
-                  <div class="p-1 bg-indigo-100 rounded border border-indigo-200">U8 geb. i-l</div>
-                </td>
                 <td class="p-1"></td>
               </tr>
             </tbody>
@@ -416,12 +397,13 @@
   </div>
 
   <script>
-    // Configurazione Supabase (Inizializza con i tuoi dati reali se non fatto altrove)
+    // Configurazione Supabase (Sostituisci con i tuoi dati reali)
     const SUPABASE_URL = 'TUA_SUPABASE_URL';
     const SUPABASE_ANON_KEY = 'TUA_SUPABASE_ANON_KEY';
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    
+    // CORRETTO: Usiamo 'supabaseClient' per evitare conflitti con la libreria globale 'supabase'
+    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    // Configurazione globale Backend e Tenant
     const API_URL = 'http://localhost:3000/api/buses';
     const FACILITIES_API_URL = 'http://localhost:3000/api/facilities';
     const TENANT_ID = '57aca40f-9ed3-4890-999a-c37513aedc46';
@@ -534,12 +516,12 @@
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
 
-      if (!supabase) {
+      if (!supabaseClient) {
         alert("Supabase non è configurato correttamente.");
         return;
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       if (error) {
         alert('Errore di accesso: ' + error.message);
@@ -549,13 +531,13 @@
     }
 
     async function handleLogout() {
-      if (supabase) await supabase.auth.signOut();
+      if (supabaseClient) await supabaseClient.auth.signOut();
       location.reload();
     }
 
     async function checkAccess() {
-      if (!supabase) return;
-      const { data: { session } } = await supabase.auth.getSession();
+      if (!supabaseClient) return;
+      const { data: { session } } = await supabaseClient.auth.getSession();
       
       const loginContainer = document.getElementById('login-container');
       const appContent = document.getElementById('app-content');
@@ -567,11 +549,10 @@
         if (loginContainer) loginContainer.classList.add('hidden');
         if (appContent) appContent.classList.remove('hidden');
         
-        // Controllo email autorizzata opzionale
         const allowedEmail = "info@seron.one";
         if (session.user.email !== allowedEmail) {
           alert("Utente non autorizzato.");
-          await supabase.auth.signOut();
+          await supabaseClient.auth.signOut();
           location.reload();
         }
       }
@@ -951,7 +932,7 @@
         if (response.ok) {
           loadBuses();
         } else {
-          alert('Errore durante l\'eliminazione.');
+          alert('Errore di eliminazione.');
         }
       } catch (error) {
         console.error('Errore di rete:', error);
