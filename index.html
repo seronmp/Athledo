@@ -54,7 +54,7 @@
           </button>
           <div class="flex items-center space-x-1 border-l border-emerald-600 pl-3">
             <button id="lang-it" onclick="setLanguage('it')" class="px-2.5 py-1 bg-white text-emerald-800 font-bold rounded text-xs transition">IT</button>
-            <button id="lang-de" onclick="setLanguage('de')" class="setLanguage('de')" class="px-2.5 py-1 bg-emerald-800/60 text-white font-bold rounded text-xs transition">DE</button>
+            <button id="lang-de" onclick="setLanguage('de')" class="px-2.5 py-1 bg-emerald-800/60 text-white font-bold rounded text-xs transition">DE</button>
           </div>
           <button onclick="handleLogout()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded text-xs transition">Esci</button>
         </div>
@@ -69,7 +69,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
             <p class="text-sm font-medium text-slate-500" data-i18n="total_athletes">Atleti Tesserati</p>
-            <p class="text-3xl font-extrabold text-slate-900 mt-2">128</p>
+            <p class="text-3xl font-extrabold text-slate-900 mt-2" id="athletes-count">2</p>
           </div>
           <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
             <p class="text-sm font-medium text-slate-500" data-i18n="expiring_certificates">Certificati in Scadenza (30 gg)</p>
@@ -101,17 +101,8 @@
                   <th class="p-4 text-right" data-i18n="th_actions">Azioni</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 text-sm">
-                <tr>
-                  <td class="p-4 font-medium text-slate-900">Lukas Hofer</td>
-                  <td class="p-4 text-slate-600 font-mono text-xs">lukas.hofer@example.com</td>
-                  <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV Burgeis</span></td>
-                  <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">IT</span></td>
-                  <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">Attivo</span></td>
-                  <td class="p-4 text-right">
-                    <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">Invia Sollecito</button>
-                  </td>
-                </tr>
+              <tbody id="athletes-tbody" class="divide-y divide-slate-100 text-sm">
+                <!-- Render dinamico -->
               </tbody>
             </table>
           </div>
@@ -344,15 +335,16 @@
 
   </div> <!-- Fine #app-content -->
 
-  <!-- MODAL 1: Nuova Iscrizione -->
+  <!-- MODAL 1: Nuova/Modifica Iscrizione Atleta -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-lg font-bold text-slate-800" data-i18n="modal_title">Nuova Iscrizione & Ricevuta</h3>
+        <h3 id="athlete-modal-title" class="text-lg font-bold text-slate-800" data-i18n="modal_title">Nuova Iscrizione & Ricevuta</h3>
         <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
       </div>
 
-      <form onsubmit="handleFormSubmit(event)" class="space-y-4">
+      <form onsubmit="handleAthleteFormSubmit(event)" class="space-y-4">
+        <input type="hidden" id="athlete-edit-index" value="-1">
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_athlete_name">Nome Atleta / Minore</label>
           <input type="text" id="athleteName" placeholder="Es. Jonas Kofler" required class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
@@ -394,7 +386,7 @@
 
         <div class="pt-3 flex justify-end space-x-3">
           <button type="button" onclick="closeCheckoutModal()" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50" data-i18n="btn_cancel">Annulla</button>
-          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold shadow-sm" data-i18n="btn_confirm">Conferma & Genera Ricevuta</button>
+          <button type="submit" id="athlete-submit-btn" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold shadow-sm" data-i18n="btn_confirm">Conferma & Genera Ricevuta</button>
         </div>
       </form>
     </div>
@@ -565,6 +557,10 @@
     let dynamicFields = [];
     let buses = [];
     let facilities = [];
+    let athletes = [
+      { name: "Lukas Hofer", email: "lukas.hofer@example.com", club: "ASV Burgeis", lang: "IT", status: "Attivo" },
+      { name: "Mario Rosi", email: "ulivieril@gmail.com", club: "ASV Mals", lang: "IT", status: "Attivo" }
+    ];
 
     // ---- GESTIONE LOGIN & SESSIONE SUPABASE ----
     window.handleLogin = async function() {
@@ -696,11 +692,99 @@
         }
       });
       renderDynamicFields();
+      renderAthletes();
       if(buses.length > 0) renderBuses();
     };
 
-    window.openCheckoutModal = function() { document.getElementById('checkoutModal').classList.remove('hidden'); };
+    // ---- GESTIONE ATLETI (TABELLA PRINCIPALE) ----
+    function renderAthletes() {
+      const tbody = document.getElementById('athletes-tbody');
+      const countLabel = document.getElementById('athletes-count');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      if(countLabel) countLabel.textContent = athletes.length;
+
+      if (athletes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nessun atleta registrato.</td></tr>`;
+        return;
+      }
+
+      athletes.forEach((athlete, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-4 font-medium text-slate-900">${athlete.name}</td>
+          <td class="p-4 text-slate-600 font-mono text-xs">${athlete.email}</td>
+          <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV ${athlete.club}</span></td>
+          <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">${athlete.lang}</span></td>
+          <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">${athlete.status}</span></td>
+          <td class="p-4 text-right space-x-2">
+            <button onclick="editAthlete(${index})" class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">Modifica</button>
+            <button onclick="deleteAthlete(${index})" class="text-rose-600 hover:text-rose-800 font-medium text-xs">Elimina</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.openCheckoutModal = function() {
+      document.getElementById('athlete-edit-index').value = -1;
+      document.getElementById('athleteName').value = '';
+      document.getElementById('parentEmail').value = '';
+      document.getElementById('athlete-modal-title').textContent = currentLang === 'it' ? "Nuova Iscrizione & Ricevuta" : "Neue Einschreibung & Bestätigung";
+      document.getElementById('athlete-submit-btn').textContent = currentLang === 'it' ? "Conferma & Genera Ricevuta" : "Bestätigen";
+      document.getElementById('checkoutModal').classList.remove('hidden');
+    };
+
     window.closeCheckoutModal = function() { document.getElementById('checkoutModal').classList.add('hidden'); };
+
+    window.editAthlete = function(index) {
+      const athlete = athletes[index];
+      if (!athlete) return;
+      
+      document.getElementById('athlete-edit-index').value = index;
+      document.getElementById('athleteName').value = athlete.name;
+      document.getElementById('parentEmail').value = athlete.email;
+      
+      const radio = document.querySelector(`input[name="club"][value="${athlete.club}"]`);
+      if (radio) radio.checked = true;
+
+      document.getElementById('athlete-modal-title').textContent = currentLang === 'it' ? "Modifica Atleta" : "Athlet Bearbeiten";
+      document.getElementById('athlete-submit-btn').textContent = currentLang === 'it' ? "Salva Modifiche" : "Änderungen Speichern";
+      document.getElementById('checkoutModal').classList.remove('hidden');
+    };
+
+    window.deleteAthlete = function(index) {
+      if (!confirm(currentLang === 'it' ? "Sei sicuro di voler eliminare questo atleta?" : "Möchten Sie diesen Athleten wirklich löschen?")) return;
+      athletes.splice(index, 1);
+      renderAthletes();
+    };
+
+    window.handleAthleteFormSubmit = function(event) {
+      event.preventDefault();
+      const editIndex = parseInt(document.getElementById('athlete-edit-index').value, 10);
+      const name = document.getElementById('athleteName').value;
+      const email = document.getElementById('parentEmail').value;
+      const club = document.querySelector('input[name="club"]:checked').value;
+      
+      if (editIndex >= 0) {
+        athletes[editIndex].name = name;
+        athletes[editIndex].email = email;
+        athletes[editIndex].club = club;
+      } else {
+        athletes.push({
+          name: name,
+          email: email,
+          club: club,
+          lang: currentLang.toUpperCase(),
+          status: "Attivo"
+        });
+      }
+
+      renderAthletes();
+      closeCheckoutModal();
+    };
+
     window.openFieldBuilderModal = function() { document.getElementById('fieldBuilderModal').classList.remove('hidden'); };
     window.closeFieldBuilderModal = function() { document.getElementById('fieldBuilderModal').classList.add('hidden'); };
 
@@ -733,30 +817,6 @@
         container.appendChild(div);
       });
     }
-
-    window.handleFormSubmit = function(event) {
-      event.preventDefault();
-      const nameInput = document.getElementById('athleteName').value;
-      const emailInput = document.getElementById('parentEmail').value;
-      const selectedClub = document.querySelector('input[name="club"]:checked').value;
-      
-      const tbody = document.querySelector('#section-athletes tbody');
-      if (!tbody) return;
-      const newRow = document.createElement('tr');
-
-      newRow.innerHTML = `
-        <td class="p-4 font-medium text-slate-900">${nameInput}</td>
-        <td class="p-4 text-slate-600 font-mono text-xs">${emailInput}</td>
-        <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV ${selectedClub}</span></td>
-        <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">${currentLang.toUpperCase()}</span></td>
-        <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">Attivo</span></td>
-        <td class="p-4 text-right">
-          <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">Invia Sollecito</button>
-        </td>
-      `;
-      tbody.appendChild(newRow);
-      closeCheckoutModal();
-    };
 
     // ---- GESTIONE CAMPI & PALESTRE (API) ----
     async function loadFacilities() {
@@ -1050,6 +1110,7 @@
     // Inizializzazione al caricamento della pagina
     window.addEventListener('DOMContentLoaded', async () => {
       await checkAccess();
+      renderAthletes();
       loadBuses();
       loadFacilities();
     });
