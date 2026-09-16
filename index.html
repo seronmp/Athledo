@@ -44,6 +44,9 @@
           <button onclick="switchTab('athletes')" id="tab-athletes" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white" data-i18n="nav_athletes">📋 Anagrafica & Moduli</button>
           <button onclick="switchTab('facilities')" id="tab-facilities" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_facilities">⚽ Campi & Palestre</button>
           <button onclick="switchTab('fleet')" id="tab-fleet" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_fleet">🚌 Gestione Pulmini</button>
+          <!-- PULSANTE TESORERIA -->
+        <button onclick="switchTab('treasury')" id="tab-treasury" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_treasury">💶 Tesoreria & Quote</button>
+        
         </nav>
 
         <!-- Admin Tools & Lingua -->
@@ -79,7 +82,46 @@
             <p class="text-3xl font-extrabold text-rose-600 mt-2">2</p>
           </div>
         </div>
+        
+<!-- SEZIONE TESORERIA & QUOTE -->
+<div id="section-treasury" class="hidden space-y-6">
+  <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <h2 class="text-lg font-bold text-slate-800" data-i18n="treasury_title">Gestione Tesoreria & Quote Associative</h2>
+      <p class="text-xs text-slate-500" data-i18n="treasury_subtitle">Monitoraggio pagamenti, saldi e scadenze quote iscrizione</p>
+    </div>
+    <button onclick="openPaymentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_record_payment">+ Registra Pagamento</button>
+  </div>
 
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="bg-slate-100 text-slate-600 border-b">
+            <th class="p-3 border-r" data-i18n="th_name">Atleta</th>
+            <th class="p-3 border-r" data-i18n="th_club">Associazione</th>
+            <th class="p-3 border-r" data-i18n="th_amount">Importo Quota</th>
+            <th class="p-3 border-r" data-i18n="th_fee_status">Stato Pagamento</th>
+            <th class="p-3 text-right" data-i18n="th_actions">Azioni</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr>
+            <td class="p-3 font-medium text-slate-800">Lukas Hofer</td>
+            <td class="p-3">ASV Burgeis</td>
+            <td class="p-3 font-mono font-bold">€ 150,00</td>
+            <td class="p-3"><span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold" data-i18n="status_pending">In Sospeso</span></td>
+            <td class="p-3 text-right space-x-2">
+              <button onclick="markAsPaid(this)" class="text-emerald-600 hover:underline font-semibold">Segna come Pagato</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+        
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -407,6 +449,7 @@
         nav_athletes: "📋 Anagrafica & Moduli",
         nav_facilities: "⚽ Campi & Palestre",
         nav_fleet: "🚌 Gestione Pulmini",
+        nav_treasury: "💶 Tesoreria & Quote",
         total_athletes: "Atleti Tesserati",
         expiring_certificates: "Certificati in Scadenza (30 gg)",
         expired_certificates: "Certificati Scaduti",
@@ -448,12 +491,20 @@
         label_field_it: "Nome Campo (Italiano)",
         label_field_de: "Nome Campo (Tedesco)",
         label_field_type: "Tipo di Dato",
-        btn_add_field_confirm: "Aggiungi al Modulo"
+        btn_add_field_confirm: "Aggiungi al Modulo",
+        treasury_title: "Gestione Tesoreria & Quote Associative",
+        treasury_subtitle: "Monitoraggio pagamenti, saldi e scadenze quote iscrizione",
+        th_fee_status: "Stato Quota",
+        th_amount: "Importo",
+        btn_record_payment: "Registra Pagamento",
+        status_paid: "Pagato",
+        status_pending: "In Sospeso"
       },
       de: {
         nav_athletes: "📋 Mitglieder & Formulare",
         nav_facilities: "⚽ Plätze & Hallen",
         nav_fleet: "🚌 Kleinbusse Verwaltung",
+        nav_treasury: "💶 Finanzwesen & Beiträge",
         total_athletes: "Registrierte Athleten",
         expiring_certificates: "Ablaufende Atteste (30 Tage)",
         expired_certificates: "Abgelaufene Atteste",
@@ -495,7 +546,16 @@
         label_field_it: "Feldname (Italienisch)",
         label_field_de: "Feldname (Deutsch)",
         label_field_type: "Datentyp",
-        btn_add_field_confirm: "Zum Formular Hinzufügen"
+        btn_add_field_confirm: "Zum Formular Hinzufügen",
+        treasury_title: "Finanzwesen & Mitgliedsbeiträge",
+        treasury_subtitle: "Überwachung von Zahlungen, Salden und Beitragsfälligkeiten",
+        th_fee_status: "Zahlungsstatus",
+        th_amount: "Betrag",
+        btn_record_payment: "Zahlung erfassen",
+        status_paid: "Bezahlt",
+        status_pending: "Ausstehend"
+      }
+    };
       }
     };
 
@@ -553,20 +613,22 @@
     }
 
     // ---- NAVIGAZIONE E MODULI ----
-    window.switchTab = function(tab) {
-      document.getElementById('section-athletes').classList.add('hidden');
-      document.getElementById('section-facilities').classList.add('hidden');
-      document.getElementById('section-fleet').classList.add('hidden');
+   window.switchTab = function(tab) {
+  document.getElementById('section-athletes').classList.add('hidden');
+  document.getElementById('section-facilities').classList.add('hidden');
+  document.getElementById('section-fleet').classList.add('hidden');
+  document.getElementById('section-treasury').classList.add('hidden');
 
-      document.getElementById('tab-athletes').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
-      document.getElementById('tab-facilities').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
-      document.getElementById('tab-fleet').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+  document.getElementById('tab-athletes').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+  document.getElementById('tab-facilities').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+  document.getElementById('tab-fleet').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+  document.getElementById('tab-treasury').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
 
-      document.getElementById(`section-${tab}`).classList.remove('hidden');
-      document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
+  document.getElementById(`section-${tab}`).classList.remove('hidden');
+  document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
 
-      if(tab === 'facilities') loadFacilities();
-      if(tab === 'fleet') loadBuses();
+  if(tab === 'facilities') loadFacilities();
+  if(tab === 'fleet') loadBuses();
     };
 
     window.setSeason = function(season) {
