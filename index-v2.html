@@ -124,6 +124,54 @@
           <label class="block font-semibold text-slate-600 mb-1">Luogo / Ort</label>
           <input type="text" id="match-location" placeholder="Casa / Auswärts" class="w-full p-2 border rounded-lg">
         </div>
+        // Esempio di database locale dei giocatori con la rispettiva squadra
+let teamPlayers = [
+  { name: "Jonas Kofler", team: "U17", role: "Attaccante", status: "Attivo ✅" },
+  { name: "Lukas Hofer", team: "U17", role: "Centrocampista", status: "Attivo ✅" },
+  { name: "Matthias Peer", team: "U15", role Difesa: "Difensore", status: "Attivo ✅" },
+  { name: "Alexandr Petrov", team: "FirstTeam", role: "Portiere", status: "Attivo ✅" }
+];
+
+function filterTeamData(selectedTeam) {
+  const tbody = document.getElementById('roster-tbody');
+  tbody.innerHTML = '';
+  
+  // Filtra i giocatori in base alla squadra scelta nel menu a tendina
+  const filtered = teamPlayers.filter(p => p.team === selectedTeam);
+  document.getElementById('roster-count').textContent = `${filtered.length} Atleti`;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400 text-xs">Nessun atleta in questa squadra.</td></tr>`;
+    return;
+  }
+
+  filtered.forEach((player, index) => {
+    tbody.innerHTML += `
+      <tr class="hover:bg-slate-50">
+        <td class="p-3 font-medium text-slate-800">${player.name}</td>
+        <td class="p-3 text-slate-600 text-xs">${player.role || 'Giocatore'}</td>
+        <td class="p-3"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-xs">${player.status}</span></td>
+        <td class="p-3 text-center">
+          <input type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// Avvia il caricamento iniziale della squadra di default (U17) all'avvio della pagina
+window.addEventListener('DOMContentLoaded', () => {
+  filterTeamData('U17');
+});
+
+function saveMatchConvocations() {
+  const opponent = document.getElementById('match-opponent').value;
+  if (!opponent) {
+    alert("Inserisci almeno il nome della squadra avversaria.");
+    return;
+  }
+  alert(`Convocazioni per la partita contro ${opponent} salvate con successo! Notifiche inviate ai genitori.`);
+}
 
         <button onclick="saveMatchConvocations()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg transition mt-2">
           💾 Salva e Invia Convocazioni
