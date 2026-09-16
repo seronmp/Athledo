@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Athledo - SaaS Gestionale Sportivo Multi-Tenant Avanzato</title>
+  <title>Athledo - SaaS Gestionale Sportivo Multi-Tenant (IT/DE)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- SDK di Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,17 +12,17 @@
 
   <!-- 1. SCHERMATA DI LOGIN -->
   <div id="login-container" class="max-w-md mx-auto mt-20 bg-white p-6 rounded-xl shadow-md border border-slate-200">
-    <h3 class="text-sm font-bold text-slate-800 mb-4">🔐 Accesso Riservato - Athledo Platform</h3>
+    <h3 class="text-sm font-bold text-slate-800 mb-4" data-i18n="login_title">🔐 Accesso Riservato - Athledo Platform</h3>
     <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-3">
       <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Email</label>
+        <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="email_label">Email</label>
         <input type="email" id="login-email" required class="w-full rounded border border-slate-300 text-xs p-2" placeholder="tua-email@dominio.it">
       </div>
       <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Password</label>
+        <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="password_label">Password</label>
         <input type="password" id="login-password" required class="w-full rounded border border-slate-300 text-xs p-2">
       </div>
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 rounded transition">
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 rounded transition" data-i18n="login_btn">
         Accedi alla Dashboard
       </button>
     </form>
@@ -39,20 +39,23 @@
           <span class="text-xs bg-emerald-800 px-2.5 py-1 rounded text-emerald-100 font-semibold">Multi-Club Hub</span>
         </div>
         
-        <!-- Tab di Navigazione Servizi Integrati -->
+        <!-- Tab di Navigazione Bilingue -->
         <nav class="hidden xl:flex items-center space-x-1">
-          <button onclick="switchTab('athletes')" id="tab-athletes" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white">📋 Anagrafica</button>
-          <button onclick="switchTab('documents')" id="tab-documents" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">📂 Documenti & Scadenze</button>
-          <button onclick="switchTab('matches')" id="tab-matches" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">⚽ Convocazioni & Presenze</button>
-          <button onclick="switchTab('facilities')" id="tab-facilities" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">🏟️ Campi & Impianti</button>
-          <button onclick="switchTab('store')" id="tab-store" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">👕 Store & Kit</button>
-          <button onclick="switchTab('fleet')" id="tab-fleet" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">🚌 Pulmini</button>
-          <button onclick="switchTab('treasury')" id="tab-treasury" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">💶 Tesoreria</button>
-          <button onclick="switchTab('portal')" id="tab-portal" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100">👨‍👩‍👦 Area Famiglie</button>
+          <button onclick="switchTab('athletes')" id="tab-athletes" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white" data-i18n="nav_athletes">📋 Anagrafica</button>
+          <button onclick="switchTab('documents')" id="tab-documents" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_docs">📂 Documenti & Scadenze</button>
+          <button onclick="switchTab('matches')" id="tab-matches" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_matches">⚽ Convocazioni & Presenze</button>
+          <button onclick="switchTab('facilities')" id="tab-facilities" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_facilities">🏟️ Campi</button>
+          <button onclick="switchTab('store')" id="tab-store" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_store">👕 Store & Kit</button>
+          <button onclick="switchTab('portal')" id="tab-portal" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_portal">👨‍👩‍👦 Area Famiglie</button>
         </nav>
 
         <div class="flex items-center space-x-3">
-          <button onclick="handleLogout()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded text-xs transition">Esci</button>
+          <!-- Selettore Lingua IT / DE -->
+          <select id="lang-switch" onchange="changeLanguage(this.value)" class="bg-emerald-800 text-emerald-100 text-xs font-semibold px-2 py-1 rounded border border-emerald-600 focus:outline-none">
+            <option value="it">🇮🇹 IT</option>
+            <option value="de">🇩🇪 DE</option>
+          </select>
+          <button onclick="handleLogout()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded text-xs transition" data-i18n="logout_btn">Esci</button>
         </div>
       </div>
     </header>
@@ -60,37 +63,37 @@
     <!-- CORPO PRINCIPALE -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
 
-      <!-- SEZIONE 1: ANAGRAFICA & MODULI ATLETI -->
+      <!-- SEZIONE 1: ANAGRAFICA -->
       <div id="section-athletes" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-            <p class="text-sm font-medium text-slate-500">Atleti Tesserati</p>
+            <p class="text-sm font-medium text-slate-500" data-i18n="stat_athletes">Atleti Tesserati / Mitglieder</p>
             <p class="text-3xl font-extrabold text-slate-900 mt-2" id="athletes-count">0</p>
           </div>
           <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-            <p class="text-sm font-medium text-slate-500">Certificati in Scadenza (30 gg)</p>
+            <p class="text-sm font-medium text-slate-500" data-i18n="stat_certs">Certificati in Scadenza / Ablaufende Zeugnisse</p>
             <p class="text-3xl font-extrabold text-amber-600 mt-2">4</p>
           </div>
           <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-            <p class="text-sm font-medium text-slate-500">Documenti Mancanti</p>
+            <p class="text-sm font-medium text-slate-500" data-i18n="stat_docs">Documenti Mancanti / Fehlende Dokumente</p>
             <p class="text-3xl font-extrabold text-rose-600 mt-2">2</p>
           </div>
         </div>
         
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-            <h2 class="text-lg font-bold text-slate-800">Anagrafica Atleti</h2>
-            <button onclick="openCheckoutModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">+ Nuova Iscrizione</button>
+            <h2 class="text-lg font-bold text-slate-800" data-i18n="title_athletes">Anagrafica Atleti</h2>
+            <button onclick="openCheckoutModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_new_reg">+ Nuova Iscrizione / Neueinschreibung</button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
-                  <th class="p-4">Nome & Cognome</th>
-                  <th class="p-4">Email Genitore</th>
-                  <th class="p-4">Associazione</th>
-                  <th class="p-4">Stato Visita / Tesseramento</th>
-                  <th class="p-4 text-right">Azioni</th>
+                  <th class="p-4" data-i18n="th_name">Nome & Cognome</th>
+                  <th class="p-4" data-i18n="th_parent">Email Genitore / Eltern-E-Mail</th>
+                  <th class="p-4" data-i18n="th_club">Associazione / Verein</th>
+                  <th class="p-4" data-i18n="th_status">Stato / Status</th>
+                  <th class="p-4 text-right" data-i18n="th_actions">Azioni</th>
                 </tr>
               </thead>
               <tbody id="athletes-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
@@ -99,163 +102,51 @@
         </div>
       </div>
 
-      <!-- SEZIONE 3 (Anticipata): ARCHIVIO DOCUMENTALE & SCADENZE A 360° -->
+      <!-- SEZIONE 3: DOCUMENTI & SCADENZE -->
       <div id="section-documents" class="hidden space-y-6">
         <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
           <div>
-            <h2 class="text-lg font-bold text-slate-800">📂 Archivio Documentale & Controllo Scadenze</h2>
-            <p class="text-xs text-slate-500">Gestione documenti d'identità, codici fiscali, moduli FIGC e visite mediche</p>
+            <h2 class="text-lg font-bold text-slate-800" data-i18n="title_docs">📂 Archivio Documentale & Controllo Scadenze</h2>
+            <p class="text-xs text-slate-500" data-i18n="sub_docs">Gestione documenti d'identità, codici fiscali, moduli FIGC e visite mediche</p>
           </div>
-          <button onclick="alert('Simulazione invio notifiche automatiche WhatsApp/Email eseguita!')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-semibold">🔔 Invia Solleciti Scadenze</button>
-        </div>
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr class="bg-slate-100 text-slate-600 border-b">
-                <th class="p-3 border-r">Atleta</th>
-                <th class="p-3 border-r">Documento Identità</th>
-                <th class="p-3 border-r">Codice Fiscale</th>
-                <th class="p-3 border-r">Visita Medica (Scadenza)</th>
-                <th class="p-3 border-r">Tesseramento Federale</th>
-                <th class="p-3 text-right">Carica / Gestisci</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-              <tr>
-                <td class="p-3 font-medium text-slate-800">Lukas Hofer</td>
-                <td class="p-3 text-emerald-600 font-semibold">Caricato ✅</td>
-                <td class="p-3 text-emerald-600 font-semibold">Caricato ✅</td>
-                <td class="p-3 text-amber-600 font-semibold">15/10/2026 ⚠️</td>
-                <td class="p-3 text-emerald-600 font-semibold">Attivo (FIGC)</td>
-                <td class="p-3 text-right"><button onclick="alert('Apertura pannello upload file')" class="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded">📁 Aggiorna File</button></td>
-              </tr>
-            </tbody>
-          </table>
+          <button onclick="alert('Notifiche inviate! / Benachrichtigungen gesendet!')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-semibold" data-i18n="btn_reminders">🔔 Invia Solleciti / Erinnerungen</button>
         </div>
       </div>
 
-      <!-- SEZIONE 2: CONVOCAZIONI & PRESENZE (APP ALLENATORI) -->
+      <!-- SEZIONE 2: CONVOCAZIONI & PRESENZE -->
       <div id="section-matches" class="hidden space-y-6">
         <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
           <div>
-            <h2 class="text-lg font-bold text-slate-800">⚽ Convocazioni Partite & Registro Presenze Allenamenti</h2>
-            <p class="text-xs text-slate-500">Strumenti rapidi per mister e staff tecnico</p>
+            <h2 class="text-lg font-bold text-slate-800" data-i18n="title_matches">⚽ Convocazioni Partite & Registro Presenze</h2>
+            <p class="text-xs text-slate-500" data-i18n="sub_matches">Strumenti rapidi per mister e staff tecnico / Trainer-Tools</p>
           </div>
-          <button onclick="alert('Convocazioni inviate via WhatsApp e Notifica Push!')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold">📤 Invia Nuova Convocazione Partita</button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Gestione Convocazioni Partita -->
-          <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
-            <h3 class="font-bold text-sm text-slate-800">📋 Partita: ASV Mals vs Naturns (Sabato 15:00)</h3>
-            <div class="space-y-2 text-xs">
-              <div class="flex justify-between items-center p-2 bg-slate-50 rounded">
-                <span>Jonas Kofler</span>
-                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold">Presente ✅</span>
-              </div>
-              <div class="flex justify-between items-center p-2 bg-slate-50 rounded">
-                <span>Lukas Hofer</span>
-                <span class="px-2 py-0.5 bg-rose-100 text-rose-800 rounded font-semibold">Infortunato ❌</span>
-              </div>
-              <div class="flex justify-between items-center p-2 bg-slate-50 rounded">
-                <span>Stefan Peer</span>
-                <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold">In Sospeso ⏳</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Registro Presenze Rapido Smartphone -->
-          <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
-            <h3 class="font-bold text-sm text-slate-800">📱 Registro Rapido Allenamento (Smart View)</h3>
-            <p class="text-xs text-slate-500">Spunta rapida presenze seduta odierna</p>
-            <div class="space-y-2 text-xs">
-              <label class="flex items-center justify-between p-2 bg-slate-50 rounded cursor-pointer">
-                <span>Jonas Kofler</span>
-                <input type="checkbox" checked class="w-4 h-4 accent-emerald-600">
-              </label>
-              <label class="flex items-center justify-between p-2 bg-slate-50 rounded cursor-pointer">
-                <span>Lukas Hofer</span>
-                <input type="checkbox" class="w-4 h-4 accent-emerald-600">
-              </label>
-            </div>
-            <button onclick="alert('Registro presenze salvato correttamente nel database!')" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2 rounded text-xs font-semibold">Salva Registro Presenze</button>
-          </div>
+          <button onclick="alert('Convocazioni inviate via WhatsApp/Push!')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold" data-i18n="btn_convocations">📤 Nuova Convocazione / Einberufung</button>
         </div>
       </div>
 
-      <!-- SEZIONE 4: GESTIONE STORE & MATERIALE SPORTIVO (KIT) -->
+      <!-- SEZIONE 4: STORE & KIT -->
       <div id="section-store" class="hidden space-y-6">
         <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-          <h2 class="text-lg font-bold text-slate-800">👕 Store & Distribuzione Kit / Merchandising</h2>
-          <p class="text-xs text-slate-500">Controllo taglie (felpe, tute, borsoni) e stato di consegna/saldo</p>
-        </div>
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr class="bg-slate-100 text-slate-600 border-b">
-                <th class="p-3 border-r">Atleta</th>
-                <th class="p-3 border-r">Kit Felpa / Tuta</th>
-                <th class="p-3 border-r">Taglia</th>
-                <th class="p-3 border-r">Stato Consegna</th>
-                <th class="p-3 border-r">Saldo Pagamento Kit</th>
-                <th class="p-3 text-right">Azioni</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-              <tr>
-                <td class="p-3 font-medium">Jonas Kofler</td>
-                <td class="p-3">Kit Rappresentanza U17</td>
-                <td class="p-3 font-bold">M</td>
-                <td class="p-3"><span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded">Da Consegnare 📦</span></td>
-                <td class="p-3 text-emerald-600 font-semibold">Saldato ✅</td>
-                <td class="p-3 text-right"><button onclick="alert('Segnato come consegnato!')" class="bg-emerald-600 text-white px-2.5 py-1 rounded">Segna Consegnato</button></td>
-              </tr>
-            </tbody>
-          </table>
+          <h2 class="text-lg font-bold text-slate-800" data-i18n="title_store">👕 Store & Distribuzione Kit / Ausrüstung</h2>
+          <p class="text-xs text-slate-500" data-i18n="sub_store">Controllo taglie e stato di consegna / Grössen und Lieferung</p>
         </div>
       </div>
 
-      <!-- SEZIONE 5: AREA FAMIGLIE / PORTALE GENITORI (SELF-SERVICE) -->
+      <!-- SEZIONE 5: PORTALE GENITORI -->
       <div id="section-portal" class="hidden space-y-6">
         <div class="bg-sky-50 border border-sky-200 p-5 rounded-xl flex justify-between items-center">
           <div>
-            <h2 class="text-lg font-bold text-sky-900">👨‍👩‍👦 Portale Genitori (Self-Service Famiglia)</h2>
-            <p class="text-xs text-sky-700">Vista dedicata per i genitori: pagamenti, scadenze e convocazioni dei figli senza passare dalla segreteria</p>
+            <h2 class="text-lg font-bold text-sky-900" data-i18n="title_portal">👨‍👩‍👦 Portale Genitori (Self-Service) / Elternportal</h2>
+            <p class="text-xs text-sky-700" data-i18n="sub_portal">Vista dedicata per i genitori: pagamenti, scadenze e convocazioni</p>
           </div>
-          <span class="px-3 py-1 bg-sky-600 text-white text-xs font-semibold rounded-lg">Accesso Famiglia</span>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
-            <h3 class="font-bold text-sm text-slate-800">👶 Figlio: Jonas Kofler (ASV Mals)</h3>
-            <ul class="text-xs space-y-2 text-slate-600">
-              <li>💶 Quota Associativa: <span class="text-emerald-600 font-bold">Pagata (€ 150)</span></li>
-              <li>🏥 Visita Medica: <span class="text-amber-600 font-bold">Scade il 20/11/2026</span></li>
-              <li>⚽ Prossima Partita: <span class="font-bold">Sabato ore 15:00 (Convocato ✅)</span></li>
-            </ul>
-            <button onclick="alert('Download ricevuta PDF in corso...')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-2 rounded text-xs font-semibold">📥 Scarica Ricevuta Fiscale</button>
-          </div>
+          <span class="px-3 py-1 bg-sky-600 text-white text-xs font-semibold rounded-lg">Self-Service</span>
         </div>
       </div>
 
-      <!-- ALTRE SEZIONI: CAMPI, PULMINI, TESORERIA -->
+      <!-- ALTRE SEZIONI -->
       <div id="section-facilities" class="hidden space-y-6">
         <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-          <h2 class="text-lg font-bold text-slate-800">🏟️ Gestione Campi Estivi & Palestre Invernali</h2>
-          <p class="text-xs text-slate-500">Coordinamento impianti e generazione orari rapidi per WhatsApp.</p>
-        </div>
-      </div>
-
-      <div id="section-fleet" class="hidden space-y-6">
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-          <h2 class="text-lg font-bold text-slate-800">🚌 Parco Auto & Pulmini</h2>
-          <p class="text-xs text-slate-500">Gestione logistica flotte delle associazioni sportive.</p>
-        </div>
-      </div>
-
-      <div id="section-treasury" class="hidden space-y-6">
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-          <h2 class="text-lg font-bold text-slate-800">💶 Tesoreria & Quote</h2>
-          <p class="text-xs text-slate-500">Monitoraggio pagamenti e stampa ricevute.</p>
+          <h2 class="text-lg font-bold text-slate-800">🏟️ Gestione Campi & Impianti / Sportanlagen</h2>
         </div>
       </div>
 
@@ -266,35 +157,127 @@
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-5">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-lg font-bold text-slate-800">Nuova Iscrizione & Tesseramento</h3>
+        <h3 class="text-lg font-bold text-slate-800" data-i18n="modal_title">Nuova Iscrizione & Tesseramento</h3>
         <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
       </div>
       <form onsubmit="handleAthleteFormSubmit(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome Atleta</label>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="modal_name">Nome Atleta / Name des Athleten</label>
           <input type="text" id="athleteName" placeholder="Es. Jonas Kofler" required class="w-full px-3 py-2 border rounded-lg text-sm">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Email Genitore / Tutore</label>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="modal_email">Email Genitore / Eltern-E-Mail</label>
           <input type="email" id="parentEmail" placeholder="es. eltern@example.com" required class="w-full px-3 py-2 border rounded-lg text-sm">
         </div>
         <div class="pt-3 flex justify-end space-x-3">
-          <button type="button" onclick="closeCheckoutModal()" class="px-4 py-2 border rounded-lg text-sm">Annulla</button>
-          <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold">Conferma Iscrizione</button>
+          <button type="button" onclick="closeCheckoutModal()" class="px-4 py-2 border rounded-lg text-sm" data-i18n="modal_cancel">Annulla</button>
+          <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold" data-i18n="modal_confirm">Conferma Iscrizione</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- SCRIPT DI GESTIONE APPLICAZIONE -->
+  <!-- SCRIPT DI GESTIONE & DIZIONARIO BILINGUE -->
   <script>
     const SUPABASE_URL = 'https://iqktzacvuhspdjdcwcnx.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlxa3R6YWN2dWhzcGRqZGN3Y254Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1Mjg3MjYsImV4cCI6MjEwNDEwNDcyNn0.iTdWadVFqK1nh-iOFrwto7t3tXr346lJ9UpLwETGJnc';
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
+    // Dizionario Italiano / Tedesco
+    const translations = {
+      it: {
+        login_title: "🔐 Accesso Riservato - Athledo Platform",
+        email_label: "Email",
+        password_label: "Password",
+        login_btn: "Accedi alla Dashboard",
+        logout_btn: "Esci",
+        nav_athletes: "📋 Anagrafica",
+        nav_docs: "📂 Documenti & Scadenze",
+        nav_matches: "⚽ Convocazioni & Presenze",
+        nav_facilities: "🏟️ Campi",
+        nav_store: "👕 Store & Kit",
+        nav_portal: "👨‍👩‍👦 Area Famiglie",
+        stat_athletes: "Atleti Tesserati",
+        stat_certs: "Certificati in Scadenza (30 gg)",
+        stat_docs: "Documenti Mancanti",
+        title_athletes: "Anagrafica Atleti",
+        btn_new_reg: "+ Nuova Iscrizione",
+        th_name: "Nome & Cognome",
+        th_parent: "Email Genitore",
+        th_club: "Associazione",
+        th_status: "Stato Visita / Tesseramento",
+        th_actions: "Azioni",
+        title_docs: "📂 Archivio Documentale & Controllo Scadenze",
+        sub_docs: "Gestione documenti d'identità, codici fiscali, moduli FIGC e visite mediche",
+        btn_reminders: "🔔 Invia Solleciti Scadenze",
+        title_matches: "⚽ Convocazioni Partite & Registro Presenze Allenamenti",
+        sub_matches: "Strumenti rapidi per mister e staff tecnico",
+        btn_convocations: "📤 Invia Nuova Convocazione Partita",
+        title_store: "👕 Store & Distribuzione Kit / Merchandising",
+        sub_store: "Controllo taglie (felpe, tute, borsoni) e stato di consegna/saldo",
+        title_portal: "👨‍👩‍👦 Portale Genitori (Self-Service Famiglia)",
+        sub_portal: "Vista dedicata per i genitori: pagamenti, scadenze e convocazioni",
+        modal_title: "Nuova Iscrizione & Tesseramento",
+        modal_name: "Nome Atleta",
+        modal_email: "Email Genitore / Tutore",
+        modal_cancel: "Annulla",
+        modal_confirm: "Conferma Iscrizione"
+      },
+      de: {
+        login_title: "🔐 Geschützter Zugriff - Athledo Platform",
+        email_label: "E-Mail",
+        password_label: "Passwort",
+        login_btn: "Zum Dashboard anmelden",
+        logout_btn: "Abmelden",
+        nav_athletes: "📋 Mitglieder",
+        nav_docs: "📂 Dokumente & Fristen",
+        nav_matches: "⚽ Einberufungen & Anwesenheit",
+        nav_facilities: "🏟️ Sportanlagen",
+        nav_store: "👕 Ausrüstung & Kit",
+        nav_portal: "👨‍👩‍👦 Elternportal",
+        stat_athletes: "Eingetragene Athleten",
+        stat_certs: "Ablaufende Zeugnisse (30 T)",
+        stat_docs: "Fehlende Dokumente",
+        title_athletes: "Mitgliederverwaltung",
+        btn_new_reg: "+ Neueinschreibung",
+        th_name: "Vor- & Nachname",
+        th_parent: "Eltern E-Mail",
+        th_club: "Verein",
+        th_status: "Status Arztzeugnis / Lizenz",
+        th_actions: "Aktionen",
+        title_docs: "📂 Dokumentenarchiv & Fristenkontrolle",
+        sub_docs: "Verwaltung von Ausweisen, Steuernummern, FIGC-Formularen und Zeugnissen",
+        btn_reminders: "🔔 Erinnerungen senden",
+        title_matches: "⚽ Spieleinberufungen & Trainingsanwesenheit",
+        sub_matches: "Schnellwerkzeuge für Trainer und Betreuer",
+        btn_convocations: "📤 Neue Einberufung senden",
+        title_store: "👕 Ausrüstung & Merchandising",
+        sub_store: "Grössenkontrolle (Sweatshirts, Trainingsanzüge) und Lieferstatus",
+        title_portal: "👨‍👩‍👦 Elternportal (Self-Service)",
+        sub_portal: "Dedizierte Ansicht für Eltern: Zahlungen, Fristen und Einberufungen",
+        modal_title: "Neueinschreibung & Lizenzierung",
+        modal_name: "Name des Athleten",
+        modal_email: "Eltern / Vormund E-Mail",
+        modal_cancel: "Abbrechen",
+        modal_confirm: "Einschreibung bestätigen"
+      }
+    };
+
+    let currentLang = 'it';
+
+    window.changeLanguage = function(lang) {
+      currentLang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+    };
+
     let athletes = [
-      { name: "Jonas Kofler", email: "eltern@example.com", club: "ASV Mals", status: "Attivo ✅" },
-      { name: "Lukas Hofer", email: "lukas.hofer@example.com", club: "ASV Burgeis", status: "Scaduto ⚠️" }
+      { name: "Jonas Kofler", email: "eltern@example.com", club: "ASV Mals", status: "Attivo / Aktiv ✅" },
+      { name: "Lukas Hofer", email: "lukas.hofer@example.com", club: "ASV Burgeis", status: "Scaduto / Abgelaufen ⚠️" }
     ];
 
     window.handleLogin = async function() {
@@ -324,18 +307,21 @@
     }
 
     window.switchTab = function(tab) {
-      ['athletes', 'documents', 'matches', 'facilities', 'store', 'fleet', 'treasury', 'portal'].forEach(t => {
+      ['athletes', 'documents', 'matches', 'facilities', 'store', 'portal'].forEach(t => {
         const el = document.getElementById(`section-${t}`);
         const btn = document.getElementById(`tab-${t}`);
         if (el) el.classList.add('hidden');
         if (btn) btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
       });
-      document.getElementById(`section-${tab}`).classList.remove('hidden');
-      document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
+      const activeEl = document.getElementById(`section-${tab}`);
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      if (activeEl) activeEl.classList.remove('hidden');
+      if (activeBtn) activeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
     };
 
     function renderAthletes() {
       const tbody = document.getElementById('athletes-tbody');
+      if (!tbody) return;
       tbody.innerHTML = '';
       document.getElementById('athletes-count').textContent = athletes.length;
       athletes.forEach((a, i) => {
@@ -359,7 +345,7 @@
         name: document.getElementById('athleteName').value,
         email: document.getElementById('parentEmail').value,
         club: "ASV Mals",
-        status: "Nuovo 🚀"
+        status: "Nuovo / Neu 🚀"
       });
       renderAthletes();
       closeCheckoutModal();
