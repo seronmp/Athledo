@@ -222,6 +222,44 @@
         </div>
 
         <!-- Form Aggiunta/Modifica Strutture -->
+        // Carica le strutture da Supabase
+async function loadFacilities() {
+  const { data, error } = await supabase.from('facilities').select('*').order('name', { ascending: true });
+  
+  if (error) {
+    console.error("Errore caricamento strutture:", error.message);
+    return;
+  }
+
+  const container = document.getElementById('facilities-list-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+  
+  if (data.length === 0) {
+    container.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Nessuna struttura registrata.</td></tr>`;
+    return;
+  }
+
+  data.forEach(facility => {
+    container.innerHTML += `
+      <tr class="border-b border-slate-100 hover:bg-slate-50">
+        <td class="p-3 font-medium text-slate-800">${facility.name}</td>
+        <td class="p-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-xs">${facility.type === 'summer' ? '☀️ Estate' : '❄️ Inverno'}</span></td>
+        <td class="p-3 text-slate-600">${facility.club || '-'}</td>
+        <td class="p-3 text-right">
+          <button onclick="deleteFacility('${facility.id}')" class="text-rose-600 hover:underline text-xs font-semibold">Elimina</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+async function deleteFacility(id) {
+  if (!confirm("Eliminare questa struttura?")) return;
+  const { error } = await supabase.from('facilities').delete().eq('id', id);
+  if (!error) loadFacilities();
+}
         <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
           <h3 id="facility-form-title" class="text-base font-semibold text-slate-800">➕ Aggiungi / Modifica Struttura</h3>
           <form id="facility-form" onsubmit="handleFacilitySubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -279,6 +317,71 @@
       </div>
 
       <!-- SEZIONE 3: GESTIONE PULMINI -->
+      // Carica i pulmini da Supabase
+async function loadBuses() {
+  const { data, error } = await supabase.from('fleet').select('*').order('name', { ascending: true });
+  
+  if (error) {
+    console.error("Errore caricamento pulmini:", error.message);
+    return;
+  }
+
+  const container = document.getElementById('fleet-list-container'); // Assicurati che l'ID corrisponda al contenitore della tabella pulmini
+  if (!container) return;
+
+  container.innerHTML = '';
+  
+  if (data.length === 0) {
+    container.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Nessun pulmino registrato.</td></tr>`;
+    return;
+  }
+
+  data.forEach(bus => {
+    container.innerHTML += `
+      <tr class="border-b border-slate-100 hover:bg-slate-50">
+        <td class="p-3 font-medium text-slate-800">${bus.name}</td>
+        <td class="p-3 font-mono text-slate-600">${bus.plate}</td>
+        <td class="p-3">${bus.seats}</td>
+        <td class="p-3 text-slate-500">${bus.notes || '-'}</td>
+        <td class="p-3 text-right">
+          <button onclick="deleteBus('${bus.id}')" class="text-rose-600 hover:underline text-xs font-semibold">Elimina</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// Salva un nuovo pulmino su Supabase
+async function saveBus(event) {
+  event.preventDefault();
+  
+  const name = document.getElementById('bus-name').value;
+  const plate = document.getElementById('bus-plate').value;
+  const seats = parseInt(document.getElementById('bus-seats').value);
+  const notes = document.getElementById('bus-notes').value;
+  const active = document.getElementById('bus-active').checked;
+
+  const { error } = await supabase.from('fleet').insert([{ name, plate, seats, notes, active }]);
+
+  if (error) {
+    alert("Errore durante il salvataggio: " + error.message);
+  } else {
+    document.getElementById('bus-form').reset();
+    loadBuses();
+  }
+}
+
+// Elimina un pulmino da Supabase
+async function deleteBus(id) {
+  if (!confirm("Sei sicuro di voler eliminare questo mezzo?")) return;
+  
+  const { error } = await supabase.from('fleet').delete().eq('id', id);
+  if (error) {
+    alert("Errore durante l'eliminazione: " + error.message);
+  } else {
+    loadBuses();
+  }
+}
       <div id="section-fleet" class="hidden space-y-6">
         <div class="flex items-center justify-between border-b border-slate-200 pb-4">
           <div>
@@ -1043,6 +1146,33 @@
   printWindow.document.write(htmlContent);
   printWindow.document.close();
 };
+    <!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Athledo - SPG Obervinschgau</title>
+    <!-- Qui ci sono i fogli di stile e Tailwind -->
+</head>
+<body>
+
+    <!-- Contenuto della pagina HTML (Header, Main, Tabelle, Modali) -->
+    
+    <!-- === IL JAVASCRIPT VA QUI SOTTO === -->
+    <script>
+      // 1. Inizializzazione di Supabase
+      const SUPABASE_URL = 'https://iqktzacvuhspdjdcwcnx.supabase.co';
+      // ... altre costanti e chiavi ...
+
+      // 2. Oggetto delle traduzioni (i18n)
+      const i18n = { ... };
+
+      // 3. Le tue funzioni (handleLogin, switchTab, loadBuses, saveBus, ecc.)
+      function handleLogin(event) {
+        // ...
+      }
+
+      // Incolla qui le nuove funzioni che abbiamo creato per Supabase e la Tesoreria
+  
   </script>
 </body>
 </html>
