@@ -85,34 +85,35 @@
         
 <!-- SEZIONE TESORERIA & QUOTE -->
 <div id="section-treasury" class="hidden space-y-6">
-  <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-    <div>
-      <h2 class="text-lg font-bold text-slate-800" data-i18n="treasury_title">Gestione Tesoreria & Quote Associative</h2>
-      <p class="text-xs text-slate-500" data-i18n="treasury_subtitle">Monitoraggio pagamenti, saldi e scadenze quote iscrizione</p>
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h2 class="text-lg font-bold text-slate-800" data-i18n="treasury_title">Gestione Tesoreria & Quote Associative</h2>
+        <p class="text-xs text-slate-500" data-i18n="treasury_subtitle">Monitoraggio pagamenti, saldi e scadenze quote iscrizione</p>
+      </div>
+      <button onclick="openPaymentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_record_payment">+ Registra Pagamento</button>
     </div>
-    <button onclick="openPaymentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_record_payment">+ Registra Pagamento</button>
-  </div>
 
-  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse text-xs">
-        <thead>
-          <tr class="bg-slate-100 text-slate-600 border-b">
-            <th class="p-3 border-r" data-i18n="th_name">Atleta</th>
-            <th class="p-3 border-r" data-i18n="th_club">Associazione</th>
-            <th class="p-3 border-r" data-i18n="th_amount">Importo Quota</th>
-            <th class="p-3 border-r" data-i18n="th_fee_status">Stato Pagamento</th>
-            <th class="p-3 text-right" data-i18n="th_actions">Azioni</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-          <tr>
-            <td class="p-3 font-medium text-slate-800">Lukas Hofer</td>
-            <td class="p-3">ASV Burgeis</td>
-            <td class="p-3 font-mono font-bold">€ 150,00</td>
-            <td class="p-3"><span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold" data-i18n="status_pending">In Sospeso</span></td>
-            <td class="p-3 text-right space-x-2">
-              <button onclick="markAsPaid(this)" class="text-emerald-600 hover:underline font-semibold">Segna come Pagato</button>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-100 text-slate-600 border-b">
+              <th class="p-3 border-r" data-i18n="th_name">Atleta</th>
+              <th class="p-3 border-r" data-i18n="th_club">Associazione</th>
+              <th class="p-3 border-r" data-i18n="th_amount">Importo Quota</th>
+              <th class="p-3 border-r" data-i18n="th_fee_status">Stato Pagamento</th>
+              <th class="p-3 text-right" data-i18n="th_actions">Azioni</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr>
+              <td class="p-3 font-medium text-slate-800">Lukas Hofer</td>
+              <td class="p-3">ASV Burgeis</td>
+              <td class="p-3 font-mono font-bold">€ 150,00</td>
+              <td class="p-3"><span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold" data-i18n="status_pending">In Sospeso</span></td>
+              <td class="p-3 text-right space-x-2">
+                <button onclick="markAsPaid(this)" class="text-emerald-600 hover:underline font-semibold">Segna come Pagato</button>
+                <button onclick="printReceipt('Lukas Hofer', '€ 150,00', 'ASV Burgeis')" class="text-slate-600 hover:text-slate-900 bg-slate-100 px-2 py-1 rounded font-medium">🖨️ Stampa PDF</button>
             </td>
           </tr>
         </tbody>
@@ -1001,6 +1002,49 @@
       loadBuses();
       loadFacilities();
     });
+    window.printReceipt = function(athleteName, amount, club) {
+  // Crea una finestra o un div temporaneo pulito per la ricevuta
+  const printWindow = window.open('', '_blank', 'width=800,height=600');
+  
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="it">
+    <head>
+      <meta charset="UTF-8">
+      <title>Ricevuta Quota Associativa</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+        .header { text-align: center; border-bottom: 2px solid #047857; padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: #047857; margin: 0; font-size: 22px; }
+        .details { margin-bottom: 40px; font-size: 16px; line-height: 1.8; }
+        .details strong { display: inline-block; width: 180px; }
+        .footer { margin-top: 60px; display: flex; justify-content: space-between; }
+        .signature { border-top: 1px solid #333; width: 250px; text-align: center; padding-top: 5px; }
+      </style>
+    </head>
+    <body onload="window.print(); window.close();">
+      <div class="header">
+        <h1>RICEVUTA QUOTA ASSOCIATIVA / MITGLIEDSBEITRAG</h1>
+        <p>SPG - Sportgemeinschaft</p>
+      </div>
+      <div class="details">
+        <p><strong>Atleta / Athlet:</strong> ${athleteName}</p>
+        <p><strong>Associazione / Verein:</strong> ${club}</p>
+        <p><strong>Importo / Betrag:</strong> ${amount}</p>
+        <p><strong>Causale / Grund:</strong> Quota iscrizione stagione sportiva</p>
+        <p><strong>Data / Datum:</strong> ${new Date().toLocaleDateString()}</p>
+      </div>
+      <div class="footer">
+        <div>Pagato / Bezahlt ✅</div>
+        <div class="signature">Firma del Cassiere / Unterschrift</div>
+      </div>
+    </body>
+    </html>
+  `;
+  
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+};
   </script>
 </body>
 </html>
