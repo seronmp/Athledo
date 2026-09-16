@@ -144,7 +144,98 @@ function filterTeamData(selectedTeam) {
     tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400 text-xs">Nessun atleta in questa squadra.</td></tr>`;
     return;
   }
+// Esempio avanzato con supporto per campi editabili e note
+let teamPlayers = [
+  { id: 1, name: "Jonas Kofler", team: "U17", role: "Attaccante", status: "Attivo ✅", notes: "Ottimo rendimento, preferisce maglia taglia M." },
+  { id: 2, name: "Lukas Hofer", team: "U17", role: "Centrocampista", status: "Attivo ✅", notes: "" },
+  { id: 3, name: "Alexandr Petrov", team: "FirstTeam", role: "Portiere", status: "Attivo ✅", notes: "Richiesto certificato medico agonistico aggiornato." }
+];
 
+function filterTeamData(selectedTeam) {
+  const tbody = document.getElementById('roster-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  
+  const filtered = teamPlayers.filter(p => p.team === selectedTeam);
+  document.getElementById('roster-count').textContent = `${filtered.length} Atleti`;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 text-xs">Nessun atleta in questa squadra.</td></tr>`;
+    return;
+  }
+
+  filtered.forEach((player) => {
+    tbody.innerHTML += `
+      <tr class="hover:bg-slate-50 border-b border-slate-100" id="row-${player.id}">
+        <!-- Nome Editabile -->
+        <td class="p-3">
+          <input type="text" value="${player.name}" onchange="updatePlayerData(${player.id}, 'name', this.value)" class="w-full bg-transparent border-b border-transparent hover:border-slate-300 focus:border-emerald-600 focus:bg-white text-sm font-medium p-1 rounded transition">
+        </td>
+        <!-- Ruolo Editabile -->
+        <td class="p-3">
+          <input type="text" value="${player.role}" onchange="updatePlayerData(${player.id}, 'role', this.value)" class="w-full bg-transparent border-b border-transparent hover:border-slate-300 focus:border-emerald-600 focus:bg-white text-xs text-slate-600 p-1 rounded transition">
+        </td>
+        <!-- Stato Editabile / Selezionabile -->
+        <td class="p-3">
+          <select onchange="updatePlayerData(${player.id}, 'status', this.value)" class="bg-slate-100 border-none text-xs rounded p-1 font-semibold text-emerald-800">
+            <option value="Attivo ✅" ${player.status.includes('Attivo') ? 'selected' : ''}>Attivo ✅</option>
+            <option value="In attesa ⏳" ${player.status.includes('attesa') ? 'selected' : ''}>In attesa ⏳</option>
+            <option value="Scaduto ⚠️" ${player.status.includes('Scaduto') ? 'selected' : ''}>Scaduto ⚠️</option>
+          </select>
+        </td>
+        <!-- Pulsante Note e Sezione Note a scomparsa -->
+        <td class="p-3">
+          <button onclick="toggleNoteBox(${player.id})" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded font-semibold transition">
+            📝 Note ${player.notes ? '🔴' : ''}
+          </button>
+        </td>
+        <td class="p-3 text-center">
+          <input type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+        </td>
+      </tr>
+      <!-- Riga nascosta per la gestione delle note -->
+      <tr id="note-row-${player.id}" class="hidden bg-slate-50">
+        <td colspan="5" class="p-3">
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-bold text-slate-600">Note interne:</span>
+            <input type="text" id="note-input-${player.id}" value="${player.notes}" placeholder="Aggiungi una nota (es. taglia kit, allergie, visite)..." class="flex-1 bg-white border border-slate-300 text-xs p-1.5 rounded">
+            <button onclick="saveNote(${player.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-xs font-semibold">Salva Nota</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// Funzioni di aggiornamento al volo
+function updatePlayerData(id, field, value) {
+  const player = teamPlayers.find(p => p.id === id);
+  if (player) {
+    player[field] = value;
+    console.log(`Aggiornato giocatore ${id}: ${field} = ${value}`);
+  }
+}
+
+function toggleNoteBox(id) {
+  const noteRow = document.getElementById(`note-row-${id}`);
+  if (noteRow) {
+    noteRow.classList.toggle('hidden');
+  }
+}
+
+function saveNote(id) {
+  const inputVal = document.getElementById(`note-input-${id}`).value;
+  const player = teamPlayers.find(p => p.id === id);
+  if (player) {
+    player.notes = inputVal;
+    alert("Nota salvata con successo per " + player.name);
+    filterTeamData(document.getElementById('team-selector').value);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  filterTeamData('U17');
+});
   filtered.forEach((player, index) => {
     tbody.innerHTML += `
       <tr class="hover:bg-slate-50">
