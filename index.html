@@ -44,9 +44,7 @@
           <button onclick="switchTab('athletes')" id="tab-athletes" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white" data-i18n="nav_athletes">📋 Anagrafica & Moduli</button>
           <button onclick="switchTab('facilities')" id="tab-facilities" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_facilities">⚽ Campi & Palestre</button>
           <button onclick="switchTab('fleet')" id="tab-fleet" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_fleet">🚌 Gestione Pulmini</button>
-          <!-- PULSANTE TESORERIA -->
-        <button onclick="switchTab('treasury')" id="tab-treasury" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_treasury">💶 Tesoreria & Quote</button>
-        
+          <button onclick="switchTab('treasury')" id="tab-treasury" class="px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100" data-i18n="nav_treasury">💶 Tesoreria & Quote</button>
         </nav>
 
         <!-- Admin Tools & Lingua -->
@@ -56,7 +54,7 @@
           </button>
           <div class="flex items-center space-x-1 border-l border-emerald-600 pl-3">
             <button id="lang-it" onclick="setLanguage('it')" class="px-2.5 py-1 bg-white text-emerald-800 font-bold rounded text-xs transition">IT</button>
-            <button id="lang-de" onclick="setLanguage('de')" class="px-2.5 py-1 bg-emerald-800/60 text-white font-bold rounded text-xs transition">DE</button>
+            <button id="lang-de" onclick="setLanguage('de')" class="setLanguage('de')" class="px-2.5 py-1 bg-emerald-800/60 text-white font-bold rounded text-xs transition">DE</button>
           </div>
           <button onclick="handleLogout()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded text-xs transition">Esci</button>
         </div>
@@ -83,46 +81,6 @@
           </div>
         </div>
         
-<!-- SEZIONE TESORERIA & QUOTE -->
-<div id="section-treasury" class="hidden space-y-6">
-    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <div>
-        <h2 class="text-lg font-bold text-slate-800" data-i18n="treasury_title">Gestione Tesoreria & Quote Associative</h2>
-        <p class="text-xs text-slate-500" data-i18n="treasury_subtitle">Monitoraggio pagamenti, saldi e scadenze quote iscrizione</p>
-      </div>
-      <button onclick="openPaymentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_record_payment">+ Registra Pagamento</button>
-    </div>
-
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="bg-slate-100 text-slate-600 border-b">
-              <th class="p-3 border-r" data-i18n="th_name">Atleta</th>
-              <th class="p-3 border-r" data-i18n="th_club">Associazione</th>
-              <th class="p-3 border-r" data-i18n="th_amount">Importo Quota</th>
-              <th class="p-3 border-r" data-i18n="th_fee_status">Stato Pagamento</th>
-              <th class="p-3 text-right" data-i18n="th_actions">Azioni</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            <tr>
-              <td class="p-3 font-medium text-slate-800">Lukas Hofer</td>
-              <td class="p-3">ASV Burgeis</td>
-              <td class="p-3 font-mono font-bold">€ 150,00</td>
-              <td class="p-3"><span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold" data-i18n="status_pending">In Sospeso</span></td>
-              <td class="p-3 text-right space-x-2">
-                <button onclick="markAsPaid(this)" class="text-emerald-600 hover:underline font-semibold">Segna come Pagato</button>
-                <button onclick="printReceipt('Lukas Hofer', '€ 150,00', 'ASV Burgeis')" class="text-slate-600 hover:text-slate-900 bg-slate-100 px-2 py-1 rounded font-medium">🖨️ Stampa PDF</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-        
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -131,27 +89,71 @@
             </div>
             <button onclick="openCheckoutModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_new_registration">+ Nuova Iscrizione & Ricevuta</button>
           </div>
-         <div class="overflow-x-auto">
-  <table class="w-full text-left border-collapse">
-    <thead>
-      <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
-        <th class="p-4" data-i18n="th_name">Nome & Cognome</th>
-        <th class="p-4" data-i18n="th_email">Email Genitore</th>
-        <th class="p-4" data-i18n="th_club">Associazione Emittente</th>
-        <th class="p-4" data-i18n="th_lang">Lingua</th>
-        <th class="p-4" data-i18n="th_med_exp">Scadenza Visita Medica</th>
-        <th class="p-4 text-right" data-i18n="th_actions">Azioni</th>
-      </tr>
-    </thead>
-    <!-- === SOSTITUISCI QUESTA PARTE (IL TAG TBODY) === -->
-    <tbody class="divide-y divide-slate-100 text-sm">
-      <tr>
-        <td class="p-4 font-medium text-slate-900">Lukas Hofer</td>
-        <!-- ... vecchie righe ... -->
-      </tr>
-    </tbody>
-  </table>
-</div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
+                  <th class="p-4" data-i18n="th_name">Nome & Cognome</th>
+                  <th class="p-4" data-i18n="th_email">Email Genitore</th>
+                  <th class="p-4" data-i18n="th_club">Associazione Emittente</th>
+                  <th class="p-4" data-i18n="th_lang">Lingua</th>
+                  <th class="p-4" data-i18n="th_med_exp">Scadenza Visita Medica</th>
+                  <th class="p-4 text-right" data-i18n="th_actions">Azioni</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-sm">
+                <tr>
+                  <td class="p-4 font-medium text-slate-900">Lukas Hofer</td>
+                  <td class="p-4 text-slate-600 font-mono text-xs">lukas.hofer@example.com</td>
+                  <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV Burgeis</span></td>
+                  <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">IT</span></td>
+                  <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">Attivo</span></td>
+                  <td class="p-4 text-right">
+                    <button class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">Invia Sollecito</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEZIONE TESORERIA & QUOTE -->
+      <div id="section-treasury" class="hidden space-y-6">
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-800" data-i18n="treasury_title">Gestione Tesoreria & Quote Associative</h2>
+            <p class="text-xs text-slate-500" data-i18n="treasury_subtitle">Monitoraggio pagamenti, saldi e scadenze quote iscrizione</p>
+          </div>
+          <button onclick="openPaymentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_record_payment">+ Registra Pagamento</button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-100 text-slate-600 border-b">
+                  <th class="p-3 border-r" data-i18n="th_name">Atleta</th>
+                  <th class="p-3 border-r" data-i18n="th_club">Associazione</th>
+                  <th class="p-3 border-r" data-i18n="th_amount">Importo Quota</th>
+                  <th class="p-3 border-r" data-i18n="th_fee_status">Stato Pagamento</th>
+                  <th class="p-3 text-right" data-i18n="th_actions">Azioni</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="p-3 font-medium text-slate-800">Lukas Hofer</td>
+                  <td class="p-3">ASV Burgeis</td>
+                  <td class="p-3 font-mono font-bold">€ 150,00</td>
+                  <td class="p-3"><span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold" data-i18n="status_pending">In Sospeso</span></td>
+                  <td class="p-3 text-right space-x-2">
+                    <button onclick="markAsPaid(this)" class="text-emerald-600 hover:underline font-semibold">Segna come Pagato</button>
+                    <button onclick="printReceipt('Lukas Hofer', '€ 150,00', 'ASV Burgeis')" class="text-slate-600 hover:text-slate-900 bg-slate-100 px-2 py-1 rounded font-medium">🖨️ Stampa PDF</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -222,44 +224,6 @@
         </div>
 
         <!-- Form Aggiunta/Modifica Strutture -->
-        // Carica le strutture da Supabase
-async function loadFacilities() {
-  const { data, error } = await supabase.from('facilities').select('*').order('name', { ascending: true });
-  
-  if (error) {
-    console.error("Errore caricamento strutture:", error.message);
-    return;
-  }
-
-  const container = document.getElementById('facilities-list-container');
-  if (!container) return;
-
-  container.innerHTML = '';
-  
-  if (data.length === 0) {
-    container.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Nessuna struttura registrata.</td></tr>`;
-    return;
-  }
-
-  data.forEach(facility => {
-    container.innerHTML += `
-      <tr class="border-b border-slate-100 hover:bg-slate-50">
-        <td class="p-3 font-medium text-slate-800">${facility.name}</td>
-        <td class="p-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-xs">${facility.type === 'summer' ? '☀️ Estate' : '❄️ Inverno'}</span></td>
-        <td class="p-3 text-slate-600">${facility.club || '-'}</td>
-        <td class="p-3 text-right">
-          <button onclick="deleteFacility('${facility.id}')" class="text-rose-600 hover:underline text-xs font-semibold">Elimina</button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-async function deleteFacility(id) {
-  if (!confirm("Eliminare questa struttura?")) return;
-  const { error } = await supabase.from('facilities').delete().eq('id', id);
-  if (!error) loadFacilities();
-}
         <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
           <h3 id="facility-form-title" class="text-base font-semibold text-slate-800">➕ Aggiungi / Modifica Struttura</h3>
           <form id="facility-form" onsubmit="handleFacilitySubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -317,71 +281,6 @@ async function deleteFacility(id) {
       </div>
 
       <!-- SEZIONE 3: GESTIONE PULMINI -->
-      // Carica i pulmini da Supabase
-async function loadBuses() {
-  const { data, error } = await supabase.from('fleet').select('*').order('name', { ascending: true });
-  
-  if (error) {
-    console.error("Errore caricamento pulmini:", error.message);
-    return;
-  }
-
-  const container = document.getElementById('fleet-list-container'); // Assicurati che l'ID corrisponda al contenitore della tabella pulmini
-  if (!container) return;
-
-  container.innerHTML = '';
-  
-  if (data.length === 0) {
-    container.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Nessun pulmino registrato.</td></tr>`;
-    return;
-  }
-
-  data.forEach(bus => {
-    container.innerHTML += `
-      <tr class="border-b border-slate-100 hover:bg-slate-50">
-        <td class="p-3 font-medium text-slate-800">${bus.name}</td>
-        <td class="p-3 font-mono text-slate-600">${bus.plate}</td>
-        <td class="p-3">${bus.seats}</td>
-        <td class="p-3 text-slate-500">${bus.notes || '-'}</td>
-        <td class="p-3 text-right">
-          <button onclick="deleteBus('${bus.id}')" class="text-rose-600 hover:underline text-xs font-semibold">Elimina</button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-// Salva un nuovo pulmino su Supabase
-async function saveBus(event) {
-  event.preventDefault();
-  
-  const name = document.getElementById('bus-name').value;
-  const plate = document.getElementById('bus-plate').value;
-  const seats = parseInt(document.getElementById('bus-seats').value);
-  const notes = document.getElementById('bus-notes').value;
-  const active = document.getElementById('bus-active').checked;
-
-  const { error } = await supabase.from('fleet').insert([{ name, plate, seats, notes, active }]);
-
-  if (error) {
-    alert("Errore durante il salvataggio: " + error.message);
-  } else {
-    document.getElementById('bus-form').reset();
-    loadBuses();
-  }
-}
-
-// Elimina un pulmino da Supabase
-async function deleteBus(id) {
-  if (!confirm("Sei sicuro di voler eliminare questo mezzo?")) return;
-  
-  const { error } = await supabase.from('fleet').delete().eq('id', id);
-  if (error) {
-    alert("Errore durante l'eliminazione: " + error.message);
-  } else {
-    loadBuses();
-  }
-}
       <div id="section-fleet" class="hidden space-y-6">
         <div class="flex items-center justify-between border-b border-slate-200 pb-4">
           <div>
@@ -536,53 +435,18 @@ async function deleteBus(id) {
     </div>
   </div>
 
+  <!-- SCRIPT UNICO E RIPULITO -->
   <script>
-    // Configurazione Supabase (Sostituisci con i tuoi dati reali)
+    // Configurazione Supabase
     const SUPABASE_URL = 'https://iqktzacvuhspdjdcwcnx.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlxa3R6YWN2dWhzcGRqZGN3Y254Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1Mjg3MjYsImV4cCI6MjEwNDEwNDcyNn0.iTdWadVFqK1nh-iOFrwto7t3tXr346lJ9UpLwETGJnc';
     
-    // CORRETTO: Usiamo 'supabaseClient' per evitare conflitti con la libreria globale 'supabase'
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
     const FACILITIES_API_URL = 'http://localhost:3000/api/facilities';
+    const API_URL = 'http://localhost:3000/api/buses';
     const TENANT_ID = '57aca40f-9ed3-4890-999a-c37513aedc46';
-// Definisci la funzione in modo globale
-window.handleLogin = async function(event) {
-  event.preventDefault();
-  
-  const emailInput = document.getElementById('login-email');
-  const passwordInput = document.getElementById('login-password');
-  
-  if (!emailInput || !passwordInput) {
-    console.error("Campi di login non trovati nel DOM");
-    return;
-  }
 
-  const email = emailInput.value;
-  const password = passwordInput.value;
-
-  // Esempio di autenticazione con Supabase
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password
-  });
-
-  if (error) {
-    alert("Errore di accesso: " + error.message);
-    return;
-  }
-
-  // Se il login ha successo, nascondi la schermata di login e mostra l'app
-  const loginSection = document.getElementById('login-container');
-  const appContent = document.getElementById('app-content');
-  
-  if (loginSection) loginSection.classList.add('hidden');
-  if (appContent) appContent.classList.remove('hidden');
-
-  // Carica i dati iniziali dei moduli
-  if (typeof loadBuses === 'function') loadBuses();
-  if (typeof loadFacilities === 'function') loadFacilities();
-};
     const i18n = {
       it: {
         nav_athletes: "📋 Anagrafica & Moduli",
@@ -703,9 +567,14 @@ window.handleLogin = async function(event) {
     let facilities = [];
 
     // ---- GESTIONE LOGIN & SESSIONE SUPABASE ----
-    async function handleLogin() {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
+    window.handleLogin = async function() {
+      const emailInput = document.getElementById('login-email');
+      const passwordInput = document.getElementById('login-password');
+      
+      if (!emailInput || !passwordInput) return;
+
+      const email = emailInput.value;
+      const password = passwordInput.value;
 
       if (!supabaseClient) {
         alert("Supabase non è configurato correttamente.");
@@ -719,7 +588,7 @@ window.handleLogin = async function(event) {
       } else {
         location.reload();
       }
-    }
+    };
 
     async function handleLogout() {
       if (supabaseClient) await supabaseClient.auth.signOut();
@@ -750,22 +619,22 @@ window.handleLogin = async function(event) {
     }
 
     // ---- NAVIGAZIONE E MODULI ----
-   window.switchTab = function(tab) {
-  document.getElementById('section-athletes').classList.add('hidden');
-  document.getElementById('section-facilities').classList.add('hidden');
-  document.getElementById('section-fleet').classList.add('hidden');
-  document.getElementById('section-treasury').classList.add('hidden');
+    window.switchTab = function(tab) {
+      document.getElementById('section-athletes').classList.add('hidden');
+      document.getElementById('section-facilities').classList.add('hidden');
+      document.getElementById('section-fleet').classList.add('hidden');
+      document.getElementById('section-treasury').classList.add('hidden');
 
-  document.getElementById('tab-athletes').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
-  document.getElementById('tab-facilities').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
-  document.getElementById('tab-fleet').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
-  document.getElementById('tab-treasury').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+      document.getElementById('tab-athletes').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+      document.getElementById('tab-facilities').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+      document.getElementById('tab-fleet').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
+      document.getElementById('tab-treasury').className = "px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800/60 text-emerald-100";
 
-  document.getElementById(`section-${tab}`).classList.remove('hidden');
-  document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
+      document.getElementById(`section-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-800 text-white";
 
-  if(tab === 'facilities') loadFacilities();
-  if(tab === 'fleet') loadBuses();
+      if(tab === 'facilities') loadFacilities();
+      if(tab === 'fleet') loadBuses();
     };
 
     window.setSeason = function(season) {
@@ -782,6 +651,7 @@ window.handleLogin = async function(event) {
 
     function renderFacilitiesTable() {
       const tbody = document.getElementById('facilities-tbody');
+      if (!tbody) return;
       tbody.innerHTML = '';
       
       const filtered = facilities.filter(f => f.type === currentSeason);
@@ -847,6 +717,7 @@ window.handleLogin = async function(event) {
 
     function renderDynamicFields() {
       const container = document.getElementById('dynamicFieldsContainer');
+      if (!container) return;
       container.innerHTML = '';
 
       dynamicFields.forEach(field => {
@@ -870,6 +741,7 @@ window.handleLogin = async function(event) {
       const selectedClub = document.querySelector('input[name="club"]:checked').value;
       
       const tbody = document.querySelector('#section-athletes tbody');
+      if (!tbody) return;
       const newRow = document.createElement('tr');
 
       newRow.innerHTML = `
@@ -1132,82 +1004,55 @@ window.handleLogin = async function(event) {
       }
     };
 
+    window.printReceipt = function(athleteName, amount, club) {
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="it">
+        <head>
+          <meta charset="UTF-8">
+          <title>Ricevuta Quota Associativa</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+            .header { text-align: center; border-bottom: 2px solid #047857; padding-bottom: 20px; margin-bottom: 30px; }
+            .header h1 { color: #047857; margin: 0; font-size: 22px; }
+            .details { margin-bottom: 40px; font-size: 16px; line-height: 1.8; }
+            .details strong { display: inline-block; width: 180px; }
+            .footer { margin-top: 60px; display: flex; justify-content: space-between; }
+            .signature { border-top: 1px solid #333; width: 250px; text-align: center; padding-top: 5px; }
+          </style>
+        </head>
+        <body onload="window.print(); window.close();">
+          <div class="header">
+            <h1>RICEVUTA QUOTA ASSOCIATIVA / MITGLIEDSBEITRAG</h1>
+            <p>SPG - Sportgemeinschaft</p>
+          </div>
+          <div class="details">
+            <p><strong>Atleta / Athlet:</strong> ${athleteName}</p>
+            <p><strong>Associazione / Verein:</strong> ${club}</p>
+            <p><strong>Importo / Betrag:</strong> ${amount}</p>
+            <p><strong>Causale / Grund:</strong> Quota iscrizione stagione sportiva</p>
+            <p><strong>Data / Datum:</strong> ${new Date().toLocaleDateString()}</p>
+          </div>
+          <div class="footer">
+            <div>Pagato / Bezahlt ✅</div>
+            <div class="signature">Firma del Cassiere / Unterschrift</div>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+    };
+
     // Inizializzazione al caricamento della pagina
     window.addEventListener('DOMContentLoaded', async () => {
       await checkAccess();
       loadBuses();
       loadFacilities();
     });
-    window.printReceipt = function(athleteName, amount, club) {
-  // Crea una finestra o un div temporaneo pulito per la ricevuta
-  const printWindow = window.open('', '_blank', 'width=800,height=600');
-  
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html lang="it">
-    <head>
-      <meta charset="UTF-8">
-      <title>Ricevuta Quota Associativa</title>
-      <style>
-        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
-        .header { text-align: center; border-bottom: 2px solid #047857; padding-bottom: 20px; margin-bottom: 30px; }
-        .header h1 { color: #047857; margin: 0; font-size: 22px; }
-        .details { margin-bottom: 40px; font-size: 16px; line-height: 1.8; }
-        .details strong { display: inline-block; width: 180px; }
-        .footer { margin-top: 60px; display: flex; justify-content: space-between; }
-        .signature { border-top: 1px solid #333; width: 250px; text-align: center; padding-top: 5px; }
-      </style>
-    </head>
-    <body onload="window.print(); window.close();">
-      <div class="header">
-        <h1>RICEVUTA QUOTA ASSOCIATIVA / MITGLIEDSBEITRAG</h1>
-        <p>SPG - Sportgemeinschaft</p>
-      </div>
-      <div class="details">
-        <p><strong>Atleta / Athlet:</strong> ${athleteName}</p>
-        <p><strong>Associazione / Verein:</strong> ${club}</p>
-        <p><strong>Importo / Betrag:</strong> ${amount}</p>
-        <p><strong>Causale / Grund:</strong> Quota iscrizione stagione sportiva</p>
-        <p><strong>Data / Datum:</strong> ${new Date().toLocaleDateString()}</p>
-      </div>
-      <div class="footer">
-        <div>Pagato / Bezahlt ✅</div>
-        <div class="signature">Firma del Cassiere / Unterschrift</div>
-      </div>
-    </body>
-    </html>
-  `;
-  
-  printWindow.document.write(htmlContent);
-  printWindow.document.close();
-};
-    <!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Athledo - SPG Obervinschgau</title>
-    <!-- Qui ci sono i fogli di stile e Tailwind -->
-</head>
-<body>
-
-    <!-- Contenuto della pagina HTML (Header, Main, Tabelle, Modali) -->
-    
-    <!-- === IL JAVASCRIPT VA QUI SOTTO === -->
-    <script>
-      // 1. Inizializzazione di Supabase
-      const SUPABASE_URL = 'https://iqktzacvuhspdjdcwcnx.supabase.co';
-      // ... altre costanti e chiavi ...
-
-      // 2. Oggetto delle traduzioni (i18n)
-      const i18n = { ... };
-
-      // 3. Le tue funzioni (handleLogin, switchTab, loadBuses, saveBus, ecc.)
-      function handleLogin(event) {
-        // ...
-      }
-
-      // Incolla qui le nuove funzioni che abbiamo creato per Supabase e la Tesoreria
-  
   </script>
 </body>
 </html>
