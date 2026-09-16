@@ -544,10 +544,45 @@ async function deleteBus(id) {
     // CORRETTO: Usiamo 'supabaseClient' per evitare conflitti con la libreria globale 'supabase'
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    const API_URL = 'http://localhost:3000/api/buses';
     const FACILITIES_API_URL = 'http://localhost:3000/api/facilities';
     const TENANT_ID = '57aca40f-9ed3-4890-999a-c37513aedc46';
+// Definisci la funzione in modo globale
+window.handleLogin = async function(event) {
+  event.preventDefault();
+  
+  const emailInput = document.getElementById('login-email');
+  const passwordInput = document.getElementById('login-password');
+  
+  if (!emailInput || !passwordInput) {
+    console.error("Campi di login non trovati nel DOM");
+    return;
+  }
 
+  const email = emailInput.value;
+  const password = passwordInput.value;
+
+  // Esempio di autenticazione con Supabase
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    alert("Errore di accesso: " + error.message);
+    return;
+  }
+
+  // Se il login ha successo, nascondi la schermata di login e mostra l'app
+  const loginSection = document.getElementById('login-container');
+  const appContent = document.getElementById('app-content');
+  
+  if (loginSection) loginSection.classList.add('hidden');
+  if (appContent) appContent.classList.remove('hidden');
+
+  // Carica i dati iniziali dei moduli
+  if (typeof loadBuses === 'function') loadBuses();
+  if (typeof loadFacilities === 'function') loadFacilities();
+};
     const i18n = {
       it: {
         nav_athletes: "📋 Anagrafica & Moduli",
