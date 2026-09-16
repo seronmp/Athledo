@@ -87,25 +87,21 @@
               <h2 class="text-lg font-bold text-slate-800" data-i18n="athletes_list">Anagrafica Atleti SPG</h2>
               <p class="text-xs text-slate-500">Mals • Burgeis • Laatsch • Taufers</p>
             </div>
-            <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-  <div>
-    <h2 class="text-lg font-bold text-slate-800" data-i18n="athletes_list">Anagrafica Atleti SPG</h2>
-    <p class="text-xs text-slate-500">Mals • Burgeis • Laatsch • Taufers</p>
-  </div>
-  
-  <!-- NUOVO FILTRO RAPIDO -->
-  <div class="flex items-center gap-2">
-    <select id="club-filter" onchange="renderAthletes()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-emerald-500">
-      <option value="">Tutte le Associazioni</option>
-      <option value="Mals">ASV Mals</option>
-      <option value="Burgeis">ASV Burgeis</option>
-      <option value="Laatsch">ASV Laatsch</option>
-      <option value="Taufers">ASV Taufers</option>
-    </select>
-    
-    <button onclick="openCheckoutModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_new_registration">+ Nuova Iscrizione & Ricevuta</button>
-  </div>
-</div>
+            
+            <!-- FILTRO RAPIDO & PULSANTE NUOVA ISCRIZIONE -->
+            <div class="flex items-center gap-2">
+              <select id="club-filter" onchange="renderAthletes()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="">Tutte le Associazioni</option>
+                <option value="Mals">ASV Mals</option>
+                <option value="Burgeis">ASV Burgeis</option>
+                <option value="Laatsch">ASV Laatsch</option>
+                <option value="Taufers">ASV Taufers</option>
+              </select>
+              
+              <button onclick="openCheckoutModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition" data-i18n="btn_new_registration">+ Nuova Iscrizione & Ricevuta</button>
+            </div>
+          </div>
+
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
@@ -114,7 +110,7 @@
                   <th class="p-4" data-i18n="th_email">Email Genitore</th>
                   <th class="p-4" data-i18n="th_club">Associazione Emittente</th>
                   <th class="p-4" data-i18n="th_lang">Lingua</th>
-                  <th class="p-4" data-i18n="th_med_exp">Scadenza Visita Medica</th>
+                  <th class="p-4" data-i18n="th_med_exp">Stato / Visita Medica</th>
                   <th class="p-4 text-right" data-i18n="th_actions">Azioni</th>
                 </tr>
               </thead>
@@ -394,6 +390,7 @@
           </div>
         </div>
 
+        <!-- Container Campi Dinamici -->
         <div id="dynamicFieldsContainer" class="space-y-4 pt-2 border-t border-slate-100"></div>
 
         <div>
@@ -420,11 +417,11 @@
       <form onsubmit="handleAddDynamicField(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_field_it">Nome Campo (Italiano)</label>
-          <input type="text" id="fieldNameIT" placeholder="Es. Taglia Maglietta" required class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+          <input type="text" id="fieldNameIT" placeholder="Es. Scadenza Visita Medica" required class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_field_de">Nome Campo (Tedesco)</label>
-          <input type="text" id="fieldNameDE" placeholder="Es. Trikotgröße" required class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+          <input type="text" id="fieldNameDE" placeholder="Es. Ablauf Ärztliches Attest" required class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" data-i18n="label_field_type">Tipo di Dato</label>
@@ -472,7 +469,7 @@
         th_email: "Email Genitore",
         th_club: "Associazione Emittente",
         th_lang: "Lingua",
-        th_med_exp: "Scadenza Visita Medica",
+        th_med_exp: "Stato / Visita Medica",
         th_actions: "Azioni",
         btn_remind: "Invia Sollecito",
         status_expired: "15/09/2026 (Scaduto)",
@@ -527,7 +524,7 @@
         th_email: "E-Mail Erziehungsberechtigte",
         th_club: "Ausstellender Verein",
         th_lang: "Sprache",
-        th_med_exp: "Ablauf Ärztliches Attest",
+        th_med_exp: "Status / Ärztliches Attest",
         th_actions: "Aktionen",
         btn_remind: "Erinnerung Senden",
         status_expired: "15.09.2026 (Abgelaufen)",
@@ -575,8 +572,8 @@
     let buses = [];
     let facilities = [];
     let athletes = [
-      { name: "Lukas Hofer", email: "lukas.hofer@example.com", club: "ASV Burgeis", lang: "IT", status: "Attivo" },
-      { name: "Mario Rosi", email: "ulivieril@gmail.com", club: "ASV Mals", lang: "IT", status: "Attivo" }
+      { name: "Lukas Hofer", email: "lukas.hofer@example.com", club: "ASV Burgeis", lang: "IT", status: "Attivo", customFields: {} },
+      { name: "Mario Rosi", email: "ulivieril@gmail.com", club: "ASV Mals", lang: "IT", status: "Attivo", customFields: {} }
     ];
 
     // ---- GESTIONE LOGIN & SESSIONE SUPABASE ----
@@ -713,42 +710,71 @@
       if(buses.length > 0) renderBuses();
     };
 
-    // ---- GESTIONE ATLETI (TABELLA PRINCIPALE) ----
+    // ---- GESTIONE ATLETI E CAMPI DINAMICI ----
+    function renderDynamicFields(existingData = {}) {
+      const container = document.getElementById('dynamicFieldsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (dynamicFields.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 italic">Nessun campo personalizzato configurato.</p>';
+        return;
+      }
+
+      dynamicFields.forEach(field => {
+        const labelText = (typeof currentLang !== 'undefined' && currentLang === 'de') ? field.nameDE : field.nameIT;
+        const fieldValue = existingData[field.key] !== undefined ? existingData[field.key] : '';
+        const div = document.createElement('div');
+
+        if (field.type === 'checkbox') {
+          div.className = 'flex items-center space-x-2 pt-2';
+          div.innerHTML = `
+            <input type="checkbox" id="dyn_${field.key}" ${fieldValue ? 'checked' : ''} class="text-emerald-600 rounded focus:ring-emerald-500 w-4 h-4">
+            <label class="text-sm font-medium text-slate-700">${labelText}</label>
+          `;
+        } else {
+          div.innerHTML = `
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">${labelText}</label>
+            <input type="${field.type}" id="dyn_${field.key}" value="${fieldValue}" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
+          `;
+        }
+        container.appendChild(div);
+      });
+    }
+
     function renderAthletes() {
-    const tbody = document.getElementById('athletes-tbody');
-  const countLabel = document.getElementById('athletes-count');
-  const selectedClub = document.getElementById('club-filter')?.value || '';
-  if (!tbody) return;
+      const tbody = document.getElementById('athletes-tbody');
+      const countLabel = document.getElementById('athletes-count');
+      const selectedClub = document.getElementById('club-filter')?.value || '';
+      if (!tbody) return;
 
-  tbody.innerHTML = '';
+      tbody.innerHTML = '';
 
-  // Filtra gli atleti in base all'associazione selezionata
-  const filteredAthletes = athletes.filter(athlete => {
-    if (!selectedClub) return true;
-    return athlete.club === selectedClub;
-  });
+      const filteredAthletes = athletes.filter(athlete => {
+        if (!selectedClub) return true;
+        return athlete.club === selectedClub;
+      });
 
-  if(countLabel) countLabel.textContent = filteredAthletes.length;
+      if(countLabel) countLabel.textContent = filteredAthletes.length;
 
-  if (filteredAthletes.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nessun atleta registrato per questa associazione.</td></tr>`;
-    return;
-  }
+      if (filteredAthletes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nessun atleta registrato per questa associazione.</td></tr>`;
+        return;
+      }
 
-  filteredAthletes.forEach((athlete) => {
-    // Troviamo l'indice reale nell'array principale per mantenere la compatibilità con Modifica/Elimina
-    const realIndex = athletes.indexOf(athlete);
+      filteredAthletes.forEach((athlete) => {
+        const realIndex = athletes.indexOf(athlete);
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="p-4 font-medium text-slate-900">${athlete.name}</td>
-      <td class="p-4 text-slate-600 font-mono text-xs">${athlete.email}</td>
-      <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV ${athlete.club}</span></td>
-      <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">${athlete.lang}</span></td>
-      <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">${athlete.status}</span></td>
-      <td class="p-4 text-right space-x-2">
-        <button onclick="editAthlete(${realIndex})" class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">Modifica</button>
-        <button onclick="deleteAthlete(${realIndex})" class="text-rose-600 hover:text-rose-800 font-medium text-xs">Elimina</button>
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-4 font-medium text-slate-900">${athlete.name}</td>
+          <td class="p-4 text-slate-600 font-mono text-xs">${athlete.email}</td>
+          <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-semibold">ASV ${athlete.club}</span></td>
+          <td class="p-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-xs rounded font-semibold">${athlete.lang}</span></td>
+          <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded font-semibold">${athlete.status}</span></td>
+          <td class="p-4 text-right space-x-2">
+            <button onclick="editAthlete(${realIndex})" class="text-emerald-600 hover:text-emerald-800 font-medium text-xs">Modifica</button>
+            <button onclick="deleteAthlete(${realIndex})" class="text-rose-600 hover:text-rose-800 font-medium text-xs">Elimina</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -759,6 +785,12 @@
       document.getElementById('athlete-edit-index').value = -1;
       document.getElementById('athleteName').value = '';
       document.getElementById('parentEmail').value = '';
+      
+      const defaultClub = document.querySelector('input[name="club"][value="Mals"]');
+      if (defaultClub) defaultClub.checked = true;
+
+      renderDynamicFields({});
+
       document.getElementById('athlete-modal-title').textContent = currentLang === 'it' ? "Nuova Iscrizione & Ricevuta" : "Neue Einschreibung & Bestätigung";
       document.getElementById('athlete-submit-btn').textContent = currentLang === 'it' ? "Conferma & Genera Ricevuta" : "Bestätigen";
       document.getElementById('checkoutModal').classList.remove('hidden');
@@ -777,6 +809,8 @@
       const radio = document.querySelector(`input[name="club"][value="${athlete.club}"]`);
       if (radio) radio.checked = true;
 
+      renderDynamicFields(athlete.customFields || {});
+
       document.getElementById('athlete-modal-title').textContent = currentLang === 'it' ? "Modifica Atleta" : "Athlet Bearbeiten";
       document.getElementById('athlete-submit-btn').textContent = currentLang === 'it' ? "Salva Modifiche" : "Änderungen Speichern";
       document.getElementById('checkoutModal').classList.remove('hidden');
@@ -793,67 +827,73 @@
       const editIndex = parseInt(document.getElementById('athlete-edit-index').value, 10);
       const name = document.getElementById('athleteName').value;
       const email = document.getElementById('parentEmail').value;
-      const club = document.querySelector('input[name="club"]:checked').value;
-      
-      if (editIndex >= 0) {
+      const clubInput = document.querySelector('input[name="club"]:checked');
+      const club = clubInput ? clubInput.value : 'Mals';
+
+      const customFieldsData = {};
+      dynamicFields.forEach(field => {
+        const input = document.getElementById(`dyn_${field.key}`);
+        if (input) {
+          customFieldsData[field.key] = field.type === 'checkbox' ? input.checked : input.value;
+        }
+      });
+
+      if (editIndex >= 0 && athletes[editIndex]) {
         athletes[editIndex].name = name;
         athletes[editIndex].email = email;
         athletes[editIndex].club = club;
+        athletes[editIndex].customFields = customFieldsData;
       } else {
         athletes.push({
           name: name,
           email: email,
           club: club,
-          lang: currentLang.toUpperCase(),
-          status: "Attivo"
+          lang: (typeof currentLang !== 'undefined' ? currentLang.toUpperCase() : 'IT'),
+          status: "Attivo",
+          customFields: customFieldsData
         });
       }
 
- window.renderAthletes();
-    window.closeCheckoutModal();
-  };
+      renderAthletes();
+      closeCheckoutModal();
+    };
 
-  window.openFieldBuilderModal = function() { document.getElementById('fieldBuilderModal').classList.remove('hidden'); };
-  window.closeFieldBuilderModal = function() { document.getElementById('fieldBuilderModal').classList.add('hidden'); };
+    window.openFieldBuilderModal = function() { document.getElementById('fieldBuilderModal').classList.remove('hidden'); };
+    window.closeFieldBuilderModal = function() { document.getElementById('fieldBuilderModal').classList.add('hidden'); };
 
-  window.handleAddDynamicField = function(event) {
-    event.preventDefault();
-    const nameIT = document.getElementById('fieldNameIT').value.trim();
-    const nameDE = document.getElementById('fieldNameDE').value.trim();
-    const type = document.getElementById('fieldType').value;
+    window.handleAddDynamicField = function(event) {
+      event.preventDefault();
+      const nameIT = document.getElementById('fieldNameIT').value.trim();
+      const nameDE = document.getElementById('fieldNameDE').value.trim();
+      const type = document.getElementById('fieldType').value;
 
-    if (!nameIT) {
-      alert("Inserisci almeno il nome in italiano del campo.");
-      return;
-    }
+      if (!nameIT) {
+        alert("Inserisci almeno il nome in italiano del campo.");
+        return;
+      }
 
-    // 1. Controllo duplicati: verifica se esiste già un campo con lo stesso nome IT
-    const exists = dynamicFields.some(f => f.nameIT.toLowerCase() === nameIT.toLowerCase());
-    if (exists) {
-      alert("Esiste già un campo dinamico con questo nome!");
-      return;
-    }
+      const exists = dynamicFields.some(f => f.nameIT.toLowerCase() === nameIT.toLowerCase());
+      if (exists) {
+        alert("Esiste già un campo dinamico con questo nome!");
+        return;
+      }
 
-    // 2. Creiamo una chiave univoca pulita (es. "Visita Medica" diventa "visita_medica")
-    const key = nameIT.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      const key = nameIT.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
-    // 3. Aggiungiamo il campo con la sua chiave identificativa
-    dynamicFields.push({ key, nameIT, nameDE, type });
-    
-    // Salvataggio opzionale per persistere i campi creati (es. in localStorage)
-    if (typeof saveDynamicFieldsConfig === 'function') {
-      saveDynamicFieldsConfig();
-    }
+      dynamicFields.push({ key, nameIT, nameDE, type });
+      
+      if (typeof saveDynamicFieldsConfig === 'function') {
+        saveDynamicFieldsConfig();
+      }
 
-    renderDynamicFields();
-    closeFieldBuilderModal();
-    
-    // Pulisce il form del builder
-    const form = document.getElementById('fieldBuilderModal').querySelector('form');
-    if (form) form.reset();
-  }; // Chiusura corretta della funzione
+      renderDynamicFields();
+      closeFieldBuilderModal();
+      
+      const form = document.getElementById('fieldBuilderModal').querySelector('form');
+      if (form) form.reset();
+    };
 
-  // ---- GESTIONE CAMPI & PALESTRE (API) ----
+    // ---- GESTIONE CAMPI & PALESTRE (API) ----
     async function loadFacilities() {
       try {
         const response = await fetch(FACILITIES_API_URL, {
