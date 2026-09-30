@@ -445,13 +445,19 @@
       alert(`Convocazioni per la partita contro ${opponent} salvate con successo! Notifiche inviate ai genitori.`);
     }
 
-    window.handleLogin = async function() {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      if (!supabaseClient) return alert("Supabase non inizializzato.");
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) alert('Errore: ' + error.message);
-      else location.reload();
+  window.handleLogin = async function() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  
+  if (!email || !password) {
+    alert("Inserisci email e password.");
+    return;
+  }
+
+  // Simulazione di accesso riuscito immediato per testare la UI
+  console.log("Accesso simulato con successo per:", email);
+  document.getElementById('login-container').classList.add('hidden');
+  document.getElementById('app-content').classList.remove('hidden');
     };
 
     async function handleLogout() {
