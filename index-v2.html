@@ -270,7 +270,7 @@
         btn_convocations: "📤 Invia Nuova Convocazione Partita",
         title_store: "👕 Store & Distribuzione Kit / Merchandising",
         sub_store: "Controllo taglie (felpe, tute, borsoni) e stato di consegna/saldo",
-        title_portal: "👨‍👩‍👦 Portale Genitori (Self-Service Famiglia)",
+        title_portal: "👨‍👩‍‍👦 Portale Genitori (Self-Service Famiglia)",
         sub_portal: "Vista dedicata per i genitori: pagamenti, scadenze e convocazioni",
         modal_title: "Nuova Iscrizione & Tesseramento",
         modal_name: "Nome Atleta",
@@ -335,7 +335,6 @@
       { name: "Lukas Hofer", email: "lukas.hofer@example.com", club: "ASV Burgeis", status: "Scaduto / Abgelaufen ⚠️" }
     ];
 
-    // Database avanzato dei giocatori con ID univoci e note per sezione squadre
     let teamPlayers = [
       { id: 1, name: "Jonas Kofler", team: "U17", role: "Attaccante", status: "Attivo ✅", notes: "Preferisce maglia taglia M." },
       { id: 2, name: "Lukas Hofer", team: "U17", role: "Centrocampista", status: "Attivo ✅", notes: "" },
@@ -343,7 +342,6 @@
       { id: 4, name: "Alexandr Petrov", team: "FirstTeam", role: "Portiere", status: "Attivo ✅", notes: "" }
     ];
 
-    // Funzione principale per filtrare e popolare i dati della squadra selezionata
     function filterTeamData(selectedTeam) {
       const tbody = document.getElementById('roster-tbody');
       if (!tbody) return;
@@ -360,15 +358,12 @@
       filtered.forEach((player) => {
         tbody.innerHTML += `
           <tr class="hover:bg-slate-50 border-b border-slate-100" id="row-${player.id}">
-            <!-- Nome Editabile -->
             <td class="p-3">
               <input type="text" value="${player.name}" onchange="updatePlayerData(${player.id}, 'name', this.value)" class="w-full bg-transparent border-b border-transparent hover:border-slate-300 focus:border-emerald-600 focus:bg-white text-sm font-medium p-1 rounded transition">
             </td>
-            <!-- Ruolo Editabile -->
             <td class="p-3">
               <input type="text" value="${player.role}" onchange="updatePlayerData(${player.id}, 'role', this.value)" class="w-full bg-transparent border-b border-transparent hover:border-slate-300 focus:border-emerald-600 focus:bg-white text-xs text-slate-600 p-1 rounded transition">
             </td>
-            <!-- Stato Editabile -->
             <td class="p-3">
               <select onchange="updatePlayerData(${player.id}, 'status', this.value)" class="bg-slate-100 border-none text-xs rounded p-1 font-semibold text-emerald-800">
                 <option value="Attivo ✅" ${player.status.includes('Attivo') ? 'selected' : ''}>Attivo ✅</option>
@@ -376,18 +371,15 @@
                 <option value="Scaduto ⚠️" ${player.status.includes('Scaduto') ? 'selected' : ''}>Scaduto ⚠️</option>
               </select>
             </td>
-            <!-- Pulsante Note -->
             <td class="p-3">
               <button type="button" onclick="toggleNoteBox(${player.id})" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded font-semibold transition">
                 📝 Note ${player.notes ? '🔴' : ''}
               </button>
             </td>
-            <!-- Checkbox Convocazione -->
             <td class="p-3 text-center">
               <input type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4">
             </td>
           </tr>
-          <!-- Riga nascosta per la nota specifica del giocatore -->
           <tr id="note-row-${player.id}" class="hidden bg-slate-50 border-b border-slate-100">
             <td colspan="5" class="p-3">
               <div class="flex items-center space-x-2">
@@ -401,7 +393,6 @@
       });
     }
 
-    // Funzione per aggiornare i campi al volo
     function updatePlayerData(id, field, value) {
       const player = teamPlayers.find(p => p.id === id);
       if (player) {
@@ -409,7 +400,6 @@
       }
     }
 
-    // Funzione per aprire/chiudere il box note del singolo giocatore
     function toggleNoteBox(id) {
       const noteRow = document.getElementById(`note-row-${id}`);
       if (noteRow) {
@@ -417,7 +407,6 @@
       }
     }
 
-    // Funzione per salvare la nota
     function saveNote(id) {
       const inputElem = document.getElementById(`note-input-${id}`);
       const player = teamPlayers.find(p => p.id === id);
@@ -429,7 +418,6 @@
       }
     }
 
-    // Funzione per salvare le convocazioni della partita
     function saveMatchConvocations() {
       const opponent = document.getElementById('match-opponent').value;
       if (!opponent) {
@@ -448,7 +436,6 @@
         return;
       }
 
-      // Accesso immediato simulato per testare la UI in locale
       document.getElementById('login-container').classList.add('hidden');
       document.getElementById('app-content').classList.remove('hidden');
     };
@@ -504,7 +491,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       renderAthletes();
-      filterTeamData('U17'); // Inizializza la squadra di default
+      filterTeamData('U17');
     });
   </script>
 </body>
